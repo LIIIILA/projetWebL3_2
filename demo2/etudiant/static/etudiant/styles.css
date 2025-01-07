@@ -1,0 +1,142 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+    background-image: url('photo_bu.png'); /* Remplacez 'image.png' par le chemin de votre image */
+    background-size: cover; /* Adapte l'image pour qu'elle couvre tout l'écran */
+    background-repeat: no-repeat; /* Évite que l'image se répète */
+    background-position: center; /* Centre l'image dans la page */
+    margin: 0; /* Supprime les marges par défaut */
+    backdrop-filter: blur(5px);
+}
+
+
+header {
+    background: #cc000089;
+    color: white;
+    padding: 1em 0;
+    text-align: center;
+    display: flex; /* Alignement flexible */
+    align-items: center; /* Centre verticalement */
+    justify-content: space-between; /* Espace entre le logo et les éléments du header */
+    background-color: #31302d; /* Couleur d'arrière-plan */
+    padding: 1em;
+    color: white;
+}
+
+.logo {
+    height: 50px; /* Taille du logo */
+    width: auto; /* Ajuste automatiquement la largeur en fonction de la hauteur */
+    margin-right: 20px; /* Espacement autour du logo */
+}
+
+@media (max-width: 600px) {
+    main {
+        width: 100%;
+        padding: 1em;
+    }
+    .logo {
+        height: 40px; /* Réduire la taille du logo sur les petits écrans */
+    }
+}
+
+.btn-nav {
+    display: inline-block; /* Pour se comporter comme un bouton */
+    padding: 10px 20px; /* Taille du bouton */
+    color: white; /* Couleur du texte */
+    background-color: #cc000089; /* Couleur de fond */
+    border: none; /* Supprime les bordures par défaut */
+    border-radius: 5px; /* Coins arrondis */
+    text-decoration: none; /* Supprime le soulignement */
+    font-size: 16px; /* Taille du texte */
+    cursor: pointer; /* Curseur en mode bouton */
+    transition: background-color 0.3s; /* Animation au survol */
+}
+
+.btn-nav:hover {
+    background-color: #cc000089; /* Changer la couleur au survol */
+}
+
+ul {
+    list-style: none; /* Supprime les puces de la liste */
+    padding: 0; /* Supprime les marges intérieures */
+}
+
+ul li {
+    display: inline; /* Affiche les éléments de la liste horizontalement */
+    margin-right: 10px; /* Espacement entre les boutons */
+}
+
+
+header h1 {
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+main {
+    padding: 2em;
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+section {
+    margin-bottom: 2em;
+}
+
+h2 {
+    color: #312d2d;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 0.5em;
+    margin-bottom: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    background: #312d2d;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #312d2d;
+}
+
+footer {
+    text-align: center;
+    padding: 0.5em;
+    background: #333;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

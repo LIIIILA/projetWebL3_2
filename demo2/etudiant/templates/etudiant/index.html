@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque Universitaire de Paris Nanterre</title>
+    <link rel="stylesheet" href="{% static 'etudiant/index.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">  
+    
+</head>
+<body>
+    <header>
+        <div>
+            <img src="{% static 'etudiant/logo.png' %}" alt="Logo" class="logo">
+            <span>| Bibliothèque Universitaire</span>
+        </div>
+        <div>
+            <a href="#">Connexion</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>BIBLIOTHÈQUE UNIVERSITAIRE DE PARIS NANTERRE</h1>
+        <h2>Réserver une salle de travail</h2>
+        <form action="#" method="post">
+            <input type="text" name="site" placeholder="Site">
+            <input type="date" name="date">
+            <input type="time" name="time">
+            <button type="submit">Recherche</button>
+        </form>
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
