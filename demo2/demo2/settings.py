@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ProjetWebS5',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'Root123!',
         'HOST': 'localhost',
         'PORT': '3306',
     }
