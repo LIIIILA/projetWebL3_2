@@ -7,11 +7,14 @@ from datetime import datetime, timedelta
 # Create your views here.
 
 def reservation_index(request):
+    
+    
+    return render(request, 'reservation/index.html')
+
+def index_page_reservation(request):
     reservations = Reservation.objects.all()
     boxes = Box.objects.all()  # Récupérer toutes les boxes
-    return render(request, 'reservation/index.html', {'boxes': boxes,'reservations': reservations})
-
-
+    return render(request, 'reservation/index_page_reservation.html', {'boxes': boxes,'reservations': reservations}) 
 
 def get_available_slots(box, date):
     opening = datetime.combine(date, box.opening_time)

@@ -19,7 +19,7 @@ from django.urls import path,include
 from etudiant import views
 
 urlpatterns = [
-    path('', include('etudiant.urls')),  # Page d'accueil redirigée vers l'application "etudiant"    path('admin/', admin.site.urls),
+    path('', include('reservation.urls')),  # Page d'accueil redirigée vers l'application "etudiant"    path('admin/', admin.site.urls),
     path('admin/', admin.site.urls), 
     path('reservation/', include('reservation.urls')),
     path('etudiant/', include('etudiant.urls')), #views avt
