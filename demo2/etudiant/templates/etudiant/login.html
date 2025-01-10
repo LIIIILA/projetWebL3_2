@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #555555;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        input[type="email"], .verification-input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .verification-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .verification-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .verification-input:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        let generatedCode = "";
+
+        // Génère un code aléatoire à 4 chiffres
+        function generateCode() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+
+        // Affiche les champs pour entrer le code
+        function showVerificationFields() {
+            generatedCode = generateCode();
+            console.log("Code généré :", generatedCode); // Pour vérifier dans la console
+            document.getElementById("verification-section").classList.remove("hidden");
+
+            // Remplit automatiquement les champs avec le code généré
+            const codeInputs = document.querySelectorAll(".verification-input");
+            for (let i = 0; i < generatedCode.length; i++) {
+                codeInputs[i].value = generatedCode[i];
+            }
+        }
+
+        // Vérifie si le code est correct
+        function submitCode() {
+            const codeInputs = document.querySelectorAll(".verification-input");
+            const enteredCode = Array.from(codeInputs).map(input => input.value).join("");
+
+            if (enteredCode === generatedCode) {
+                alert("Code valide ! Connexion réussie.");
+                // Redirige vers la page principale
+                window.location.href = "/home";
+            } else {
+                alert("Code invalide !");
+                // Réinitialise les champs
+                document.getElementById("verification-section").classList.add("hidden");
+                document.getElementById("email").value = "";
+                codeInputs.forEach(input => input.value = "");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Connexion</h1>
+        <div id="email-section">
+            <label for="email">Adresse email</label>
+            <input type="email" id="email" placeholder="Entrez votre email" required>
+            <button onclick="showVerificationFields()">Envoyer le code</button>
+        </div>
+
+        <div id="verification-section" class="hidden">
+            <label>Entrez le code reçu par email</label>
+            <div class="verification-container">
+                <input type="text" class="verification-input" maxlength="1" id="code1">
+                <input type="text" class="verification-input" maxlength="1" id="code2">
+                <input type="text" class="verification-input" maxlength="1" id="code3">
+                <input type="text" class="verification-input" maxlength="1" id="code4">
+            </div>
+            <button onclick="submitCode()">Vérifier le code</button>
+        </div>
+    </div>
+</body>
+</html>

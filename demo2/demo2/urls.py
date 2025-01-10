@@ -1,28 +1,15 @@
-"""
-URL configuration for demo2 project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from etudiant import views
 
 urlpatterns = [
-    path('', include('reservation.urls')),  # Page d'accueil redirigée vers l'application "etudiant"    path('admin/', admin.site.urls),
+    path('', include('reservation.urls')),  # Page d'accueil redirigée vers l'application "reservation"
     path('admin/', admin.site.urls), 
     path('reservation/', include('reservation.urls')),
-    path('etudiant/', include('etudiant.urls')), #views avt
+    path('etudiant/', include('etudiant.urls')),  # Application 'etudiant' incluse
     path('administration/', include('administration.urls')),
-
+    
+    # Corriger la ligne suivante pour associer directement /login à la vue login_view
+    path('login/', views.login_view, name='login'),  # Utilisation directe de la vue de login
+    path('send-email/', views.send_test_email, name='send_test_email'),
 ]
