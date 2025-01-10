@@ -1,4 +1,6 @@
-#!/root/env1/bin/python3
+#!/bin/sh
+'''exec' "/mnt/c/Bureau/MIASHS - Copie/COURS/L3/S5/PROJET WEB/projet bu/projetWebL3_2/env1/bin/python3" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys

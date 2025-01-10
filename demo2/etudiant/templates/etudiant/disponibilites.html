@@ -1,0 +1,127 @@
+{% load static %}
+<!-- <html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disponibilités des Box</title>
+    <link rel="stylesheet" href="{% static 'etudiant/disponibilites.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Disponibilités des Box</h1>
+    </header>
+
+    <main>
+        <section class="filter-section">
+            <h2>Filtrer les Disponibilités</h2>
+            <!-- Vous pouvez ajouter des filtres ici (date, salle, etc.) 
+            <form method="get">
+                <label for="salle">Salle:</label>
+                <select name="salle" id="salle">
+                    {% for salle in salles %}
+                        <option value="{{ salle.id }}">{{ salle.nom }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="date">Date:</label>
+                <input type="date" name="date" id="date">
+
+                <button type="submit">Filtrer</button>
+            </form>
+        </section>
+
+        <!-- Affichage des disponibilités 
+        <section class="disponibilites-section">
+            <h2>Disponibilités des Box</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom de l'étudiant</th>
+                        <th>Jour</th>
+                        <th>Heure de début</th>
+                        <th>Heure de fin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for disponibilite in disponibilites %}
+                        <tr>
+                            <td>{{ disponibilite.etudiant.nom }}</td> <!-- Nom de l'étudiant -
+                            <td>{{ disponibilite.jour }}</td> <!-- Jour de disponibilité 
+                            <td>{{ disponibilite.heure_debut }}</td> <!-- Heure de début 
+                            <td>{{ disponibilite.heure_fin }}</td> <!-- Heure de fin 
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">Aucune disponibilité à afficher.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 - Disponibilités des Box</p>
+    </footer>
+</body>
+</html> -->
+<!-- templates/salle_detail.html -->
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disponibilités des Box</title>
+    <link rel="stylesheet" href="{% static 'etudiant/disponibilites.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Disponibilités des Box</h1>
+    </header>
+
+    <main>
+        {% for salle in salles %}
+        <section class="room-card">
+            <h2>{{ salle.nom }}</h2>
+            <p>{{ salle.description }}</p>
+            <div class="capacity">
+                <span>👥 {{ salle.nombre_places }} places</span>
+            </div>
+
+            <div class="availability">
+                <!-- <div class="time-selector">
+                    <h3>Heure</h3>
+                    <div class="time-options">
+                        {% for dispo in salle.disponibilites.all %}
+                            {% if dispo.est_disponible %}
+                                <button class="time-btn">{{ dispo.heure_debut|time:"H:i" }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div> -->
+
+                <div class="duration-selector">
+                    <h3>Durée</h3>
+                    <!-- Vous pouvez ajouter des durées dynamiques ici si nécessaire -->
+                    <div class="duration-options">
+                        <button class="duration-btn">00:30</button>
+                        <button class="duration-btn">01:00</button>
+                        <button class="duration-btn">01:30</button>
+                        <button class="duration-btn">02:00</button>
+                        <button class="duration-btn">02:30</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reserve-btn">Réserver</button>
+        </section>
+        {% empty %}
+            <p>Aucune salle disponible pour l'instant.</p>
+        {% endfor %}
+    </main>
+
+    <footer>
+        <p>© 2024 - Disponibilités des Box</p>
+    </footer>
+</body>
+</html>
