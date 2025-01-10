@@ -1,4 +1,5 @@
-{% load static%}
+{% load static %}
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -8,34 +9,28 @@
 </head>
 <body>
     <header>
-        <img src="{% static 'etudiant/logo.png' %}" alt="Logo" class="logo">
+        <img src="reservation/logo.png" alt="Logo" class="logo">
         <h1>Réservation de Box</h1>
         <nav>
             <ul>
-                <li><a href="https://reserver-groupe.parisnanterre.fr/Reservationsalles/page2.aspx?id_site=2&dte=22%2f12%2f2024&heure_d=08%3a30%3a00&heure_f=19%3a45%3a00" 
-                            class="btn-nav"
-                            target="_blank" 
-                            rel="noopener noreferrer">Disponibilités</a></li>
-                        <li><a href="#reservation" class="btn-nav">Réserver</a></li>
-                        <li><a href="#historique.html" class="btn-nav">Historique</a></li>
-                        <li><a href="https://cas.parisnanterre.fr/login?service=https://portail.parisnanterre.fr/redirection" 
-                            class="btn-nav" 
-                            target="_blank" 
-                            rel="noopener noreferrer">Connexion</a></li>
-            
-            
+                <a href="#disponibilites" class="btn-nav">Disponibilités</a>
+                <a href="#reservation" class="btn-nav">Réserver</a>
+                <a href="#historique" class="btn-nav">Historique</a>
+                
+                    <a href="https://cas.parisnanterre.fr/login" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="btn-nav">Connexion</a>
                 
             </ul>
         </nav>
     </header>
+    
     <main>
-        <section id="disponibilites">
-            <h2>Consulter les disponibilités</h2>
-            <div id="slots"></div>
-        </section>
         <section id="reservation">
             <h2>Faire une réservation</h2>
-            <form id="reservation-form">
+            <form id="reservation-form" method="post" action="{% url 'reserver_box' %}">
+                {% csrf_token %}
                 <label for="box">Choisissez une box :</label>
                 <select id="box" name="box">
                     <option value="box1">Box 1</option>
@@ -52,6 +47,6 @@
     <footer>
         <p>© 2024 - Application de Réservation de Box</p>
     </footer>
-    <script src="script.js"></script>
+    <script src="{% static 'etudiant/script.js' %}"></script>
 </body>
 </html>
