@@ -18,11 +18,9 @@ from .forms import LoginForm
 from django.http import HttpResponse
 
 
-from django.shortcuts import render
-
-def login_etudiant(request):
+def connexion(request):
     # Logique de la vue (par exemple, rendre un formulaire de connexion)
-    return render(request, 'etudiant/login_etudiant.html')
+    return render(request, 'etudiant/connexion.html')
 
 
 
@@ -90,11 +88,18 @@ def login_view(request):
                 fail_silently=False,
             )
             return HttpResponse("Code envoyé à votre adresse email.")
-        else:
-            if email in verification_codes and verification_codes[email] == code:
-                return HttpResponse("Connexion réussie !")
+        # else:
+        #     if email in verification_codes and verification_codes[email] == code:
+        #         return HttpResponse("Connexion réussie !")
+        #     else:
+        #         return HttpResponse("Code incorrect, veuillez réessayer.")
+        else:  # Si un code est saisi, on le vérifie
+            if 'verification_code' in request.session and str(request.session['verification_code']) == code:
+                messages.success(request, "Connexion réussie !")
+                return redirect('etudiant/login_etudiant.html')  # Rediriger l'utilisateur vers la page d'accueil ou autre
             else:
-                return HttpResponse("Code incorrect, veuillez réessayer.")
+                messages.error(request, "Code incorrect, veuillez réessayer.")
+                return redirect('login_etudiant.html')  # Redirige à la page de login pour réessayer
 
     return render(request, "etudiant/login.html")
 
@@ -105,7 +110,7 @@ def verify_code(request):
         if code and int(code) == request.session.get('verification_code'):
             # Connexion réussie, on pourrait authentifier l'utilisateur ici
             messages.success(request, "Connexion réussie !")
-            return redirect('home')  # Rediriger vers la page d'accueil ou une page protégée
+            return redirect('etudiant/login_etudiant.html')  # Rediriger vers la page d'accueil ou une page protégée
         else:
             messages.error(request, "Code incorrect. Essayez à nouveau.")
 
