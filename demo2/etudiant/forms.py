@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # forms.py
 from django import forms
 
@@ -24,9 +23,7 @@ class ReservationForm(forms.Form):
         widget=forms.RadioSelect,
         label="Durée"
     )
-=======
 from django import forms
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Email')
->>>>>>> login

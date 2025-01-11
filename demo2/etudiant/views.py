@@ -1,4 +1,10 @@
 
+
+from django.shortcuts import render, get_object_or_404
+from .models import Salle
+from .forms import ReservationForm
+
+
 from django.shortcuts import render, get_object_or_404
 from .models import Salle
 from .forms import ReservationForm
@@ -12,13 +18,20 @@ from .forms import LoginForm
 from django.http import HttpResponse
 
 
+from django.shortcuts import render
+
+def login_etudiant(request):
+    # Logique de la vue (par exemple, rendre un formulaire de connexion)
+    return render(request, 'etudiant/login_etudiant.html')
+
+
+
 def index(request):
     return render(request, 'etudiant/index.html')
 
 # Fonction pour générer un code de vérification
 def generate_verification_code():
     return random.randint(100000, 999999)
-
 
 def historique(request):
     return render(request, 'historique.html')
