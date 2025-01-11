@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Boxes disponibles</h2>
+    <p>Site ID : {{ site_id }}</p>
+    <p>Pour la plage horaire de {{ start_time }} à {{ end_time }}</p>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% else %}
+        {% if boxes %}
+            <ul>
+                {% for box in boxes %}
+                    <li>{{ box.nom }} - Capacité : {{ box.capacite }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun box disponible pour cette plage horaire.</p>
+        {% endif %}
+    {% endif %}    
+
+<a href="{% url 'reservation_index' %}">Retour</a>
+
+</body>
+</html>

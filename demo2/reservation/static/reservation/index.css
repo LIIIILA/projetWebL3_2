@@ -109,3 +109,28 @@ button:hover {
     width: 30%; /* Largeur du logo ajustée */
     height: auto;
 }
+
+/* Spécifique aux éléments select (comme les sites) */
+select {
+    -webkit-appearance: none; /* Supprime le style par défaut du select pour le rendre plus uniforme */
+    -moz-appearance: none; /* Idem pour Firefox */
+    appearance: none; /* Empêche les styles par défaut du select */
+    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Circle-icons-arrow-down.svg/32px-Circle-icons-arrow-down.svg.png') no-repeat scroll right center;
+    background-size: 15px;
+    font-size: 16px; /* Taille de la police dans le select */
+    padding: 10px; /* Padding interne, pour agrandir le champ */
+    width: 20%; /* S'assure que le select prend toute la largeur du conteneur */
+    border-radius: 5px; /* Coins arrondis pour un style plus moderne */
+    border: 1px solid #ccc; /* Bordure fine autour du select */
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+select option{
+    color: rgb(0, 0, 0);
+    background-color: #ffffff;
+
+    
+}
+

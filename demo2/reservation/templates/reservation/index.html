@@ -9,6 +9,32 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">  
     
 </head>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Mois au format "MM"
+            const dd = String(today.getDate()).padStart(2, '0'); // Jour au format "DD"
+            const limitDate = new Date(today.getFullYear(), 6, 19); // 19 juillet de l'année en cours
+            
+            // Initialiser Flatpickr
+            flatpickr("#reservation-date", {
+                minDate: `${yyyy}-${mm}-${dd}`, // La date minimale sera aujourd'hui
+                disable: [
+                    function(date) {
+                        return date.getDay() === 0 || date.getDay() === 6 || date > limitDate; // Désactiver les week-ends et après le 19 juillet
+                    }
+                ],
+                altInput: true,
+                altFormat: "d-m-Y", // Format utilisé pour le champ visible
+                dateFormat: "d-m-Y", // Le format de date d'affichage
+            });
+        });
+    </script>
+
+
 <body>
     <header>
         <div>
@@ -21,16 +47,47 @@
         </div>
     </header>
 
+    
+
+
     <div class="container">
         <h1>BIBLIOTHÈQUE UNIVERSITAIRE DE PARIS NANTERRE</h1>
         <h2>Réserver une salle de travail</h2>
-        <form action="#" method="post">
-            <input type="text" name="site" placeholder="Site">
-            <input type="date" name="date">
-            <input type="time" name="time">
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <label for="site">Choisir un site :</label>
+            <select name="site_id" required>
+                {% for site in sites %}
+                    <option value="{{ site.id }}">{{ site.nom }}</option>
+                {% endfor %}
+            </select>
+            
+            <input id="reservation-date" type="text" name="date" placeholder="Choisir une date" required>
+            
+            <label for="start_time">Heure de début :</label>
+            <select name="start_time" id="start_time">
+                {% for hour in hours %}
+                    <option value="{{ hour }}">{{ hour }}</option>
+                {% endfor %}
+            </select>
+        
+            <label for="end_time">Heure de fin :</label>
+            <select name="end_time" id="end_time">
+                {% for hour in hours %}
+                    <option value="{{ hour }}">{{ hour }}</option>
+                {% endfor %}
+            </select>
+
             <button type="submit">Recherche</button>
         </form>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    
     </div>
+
 
     <script src="{% static 'js/script.js' %}"></script>
 </body>
