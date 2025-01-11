@@ -1,8 +1,8 @@
-<<<<<<< HEAD
+
 from django.shortcuts import render, get_object_or_404
 from .models import Salle
 from .forms import ReservationForm
-=======
+
 import random
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.conf import settings
 from .forms import LoginForm
 from django.http import HttpResponse
->>>>>>> login
+
 
 def index(request):
     return render(request, 'etudiant/index.html')
@@ -19,7 +19,7 @@ def index(request):
 def generate_verification_code():
     return random.randint(100000, 999999)
 
-<<<<<<< HEAD
+
 def historique(request):
     return render(request, 'historique.html')
 
@@ -55,7 +55,7 @@ def reserver_box(request):
         # Traitement du formulaire
         pass
     return render(request, 'etudiant/reserver_box.html')
-=======
+
 # Vue de connexion
 # Stocke temporairement les codes envoyés (en production, utilisez un modèle ou un cache)
 verification_codes = {}
@@ -108,4 +108,4 @@ def send_test_email(request):
         fail_silently=False,
     )
     return HttpResponse("Test email has been sent!")
->>>>>>> login
+
