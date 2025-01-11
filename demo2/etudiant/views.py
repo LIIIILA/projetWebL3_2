@@ -9,6 +9,13 @@ from django.conf import settings
 from .forms import LoginForm
 from django.http import HttpResponse
 
+from django.shortcuts import render
+
+def login_etudiant(request):
+    # Logique de la vue (par exemple, rendre un formulaire de connexion)
+    return render(request, 'etudiant/login_etudiant.html')
+
+
 def index(request):
     return render(request, 'etudiant/index.html')
 
