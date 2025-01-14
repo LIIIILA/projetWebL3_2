@@ -143,4 +143,7 @@ EMAIL_HOST_USER = 'ton.email@gmail.com'  # Ton adresse email
 EMAIL_HOST_PASSWORD = 'ton_mot_de_passe'  # Ton mot de passe
 DEFAULT_FROM_EMAIL = 'ton.email@gmail.com'  # Email par défaut pour l'expéditeur
 
+LOGOUT_REDIRECT_URL = '/'  # URL vers laquelle rediriger après déconnexion (optionnel)
+
+
 

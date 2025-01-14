@@ -12,32 +12,106 @@
         <h1>Réservation de Box</h1>
         <nav>
             <ul>
-                <a href="#disponibilites" class="btn-nav">Disponibilités</a>
+                <a button href="#disponibilites" class="btn-nav">Disponibilités</button></a>
                 <a href="#reservation" class="btn-nav">Réserver</a>
                 <a href="#historique" class="btn-nav">Historique</a>
-                
-                <a rel="noopener noreferrer" class="btn-nav">deconnexion</a>
-                
+                <!-- <a href="{% url 'logout' %}" class="btn-nav">Déconnexion</a> -->
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-nav">Déconnexion</button>
+                </form>
             </ul>
         </nav>
     </header>
     
     <main>
+        <section class="room-card">
+            <h2>Voici la disponibilité des box : </h2>
+            {% for salle in salles %}
+            <h3>{{ salle.nom }}</h3>
+            <p>{{ salle.description }}</p>
+            <div class="capacity">
+                <span>👥 {{ salle.nombre_places }} places</span>
+            </div>
+
+            <div class="availability">
+                <!-- <div class="time-selector">
+                    <h3>Heure</h3>
+                    <div class="time-options">
+                        {% for dispo in salle.disponibilites.all %}
+                            {% if dispo.est_disponible %}
+                                <button class="time-btn">{{ dispo.heure_debut|time:"H:i" }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div> -->
+
+                <div class="duration-selector">
+                    <h3>Durée</h3>
+                    <!-- Vous pouvez ajouter des durées dynamiques ici si nécessaire -->
+                    <div class="duration-options">
+                        <button class="duration-btn">00:30</button>
+                        <button class="duration-btn">01:00</button>
+                        <button class="duration-btn">01:30</button>
+                        <button class="duration-btn">02:00</button>
+                        <button class="duration-btn">02:30</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reserve-btn">Réserver</button>
+        </section>
+        {% empty %}
+            <p>Aucune salle disponible pour l'instant.</p>
+        {% endfor %}
+
         <section id="reservation">
             <h2>Faire une réservation</h2>
             <form id="reservation-form" method="post" action="{% url 'reserver_box' %}">
                 {% csrf_token %}
+                <label for="salle">Choisissez une salle :</label>
+                <select id="salle" name="salle">
+                    {% for salle in salles %}
+                        <option value="{{ salle.id }}">{{ salle.nom }}</option>
+                    {% endfor %}
+                </select>
                 <label for="box">Choisissez une box :</label>
                 <select id="box" name="box">
-                    <option value="box1">Box 1</option>
-                    <option value="box2">Box 2</option>
+                    {% for box in boxes %}
+                        <option value="{{ box.id }}">{{ box.nom }}</option>
+                    {% endfor %}
                 </select>
                 <label for="date">Date :</label>
                 <input type="date" id="date" name="date">
-                <label for="time">Heure :</label>
-                <input type="time" id="time" name="time">
+                <label for="time">Heure de depart :</label>
+                <select id="start_time" name="start_time" required>
+                    {% for slot in time_slots %}
+                        <option value="{{ slot }}">{{ slot }}</option>
+                    {% endfor %}
+                </select>
+                <label for="time">Heure de fin :</label>
+                <select id="start_time" name="end_time" required>
+                    {% for slot in time_slots %}
+                        <option value="{{ slot }}">{{ slot }}</option>
+                    {% endfor %}
+                </select>
                 <button type="submit">Réserver</button>
             </form>
+        </section>
+
+        <section id="historique">
+            <h2>Voici l'historique de vos réservations :</h2>
+            <ul id="history-list">
+                {% for reservation in reservations %}
+                    <li>
+                        <strong>{{ reservation.room }}</strong><br>
+                        Du {{ reservation.start_time|date:"d/m/Y H:i" }} au {{ reservation.end_time|date:"d/m/Y H:i" }}<br>
+                        Réservé le {{ reservation.created_at|date:"d/m/Y H:i" }}
+                    </li>
+                {% empty %}
+                    <li>Aucune réservation trouvée.</li>
+                {% endfor %}
+            </ul>
         </section>
     </main>
     <footer>
