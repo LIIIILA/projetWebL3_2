@@ -18,11 +18,13 @@ from .forms import LoginForm
 from django.http import HttpResponse
 
 
+def login(request):
+    # Logique de la vue (par exemple, rendre un formulaire de connexion)
+    return render(request, 'etudiant/login.html')
+
 def connexion(request):
     # Logique de la vue (par exemple, rendre un formulaire de connexion)
     return render(request, 'etudiant/connexion.html')
-
-
 
 def index(request):
     return render(request, 'etudiant/index.html')
