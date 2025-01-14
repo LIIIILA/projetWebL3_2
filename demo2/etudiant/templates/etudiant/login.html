@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,29 +9,46 @@
     <style>
         /* Styles généraux */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Arial', sans-serif;
+            background-color: #b9b9b9; /* Fond gris clair */
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            position: relative; /* Permet de positionner des éléments relativement à la page */
         }
 
         .container {
             background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             padding: 30px;
             width: 350px;
             text-align: center;
+            border-top: 5px solid #dc3545; /* Bordure rouge */
+            position: relative;
+        }
+
+        /* Section pour le logo */
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .logo-container img {
+            height: 50px; /* Ajuste la taille du logo */
+            width: auto;
         }
 
         h1 {
-            font-size: 24px;
-            color: #333333;
+            font-size: 26px;
+            color: #dc3545; /* Rouge principal */
             margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
         }
 
         label {
@@ -40,13 +59,20 @@
             text-align: left;
         }
 
-        input[type="email"], .verification-input {
+        input[type="text"], .verification-input {
             width: calc(100% - 20px);
             padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #dddddd;
-            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 16px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #dc3545; /* Bordure rouge au focus */
+            outline: none;
         }
 
         .verification-container {
@@ -60,14 +86,16 @@
             height: 50px;
             text-align: center;
             font-size: 18px;
-            border: 1px solid #dddddd;
-            border-radius: 5px;
-            transition: all 0.2s;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         }
 
         .verification-input:focus {
-            border-color: #007BFF;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            border-color: #dc3545;
+            outline: none;
+            box-shadow: 0 0 5px rgba(220, 53, 69, 0.5);
         }
 
         button {
@@ -75,15 +103,16 @@
             padding: 12px;
             font-size: 16px;
             color: #ffffff;
-            background-color: #007BFF;
+            background-color: #dc3545;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #b02a37;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
         }
 
         .hidden {
@@ -91,9 +120,17 @@
         }
 
         .error-message {
-            color: red;
+            color: #dc3545; /* Rouge pour les erreurs */
             font-size: 14px;
             margin-bottom: 10px;
+            display: none; /* Caché par défaut */
+        }
+
+        .generated-code {
+            font-size: 16px;
+            color: #007bff; /* Bleu pour le code généré */
+            margin-bottom: 10px;
+            display: none; /* Caché par défaut */
         }
     </style>
     <script>
@@ -106,14 +143,35 @@
 
         // Affiche les champs pour entrer le code
         function showVerificationFields() {
-            generatedCode = generateCode();
-            console.log("Code généré :", generatedCode); // Pour vérifier dans la console
-            document.getElementById("verification-section").classList.remove("hidden");
+            const identifierInput = document.getElementById("identifier");
+            const errorMessage = document.getElementById("error-message");
 
-            // Remplit automatiquement les champs avec le code généré
-            const codeInputs = document.querySelectorAll(".verification-input");
-            for (let i = 0; i < generatedCode.length; i++) {
-                codeInputs[i].value = generatedCode[i];
+            // Vérifie que l'identifiant contient exactement 9 chiffres
+            const identifier = identifierInput.value;
+            const isValidIdentifier = /^[0-8]{8}$/.test(identifier);
+
+            if (isValidIdentifier) {
+                // Cache le message d'erreur et génère le code
+                errorMessage.style.display = "none";
+                generatedCode = generateCode();
+                console.log("Code généré :", generatedCode); // Pour débogage
+
+                // Affiche le code généré (simulation de l'envoi)
+                const codeDisplay = document.getElementById("generated-code");
+                codeDisplay.innerText = `Code envoyé : ${generatedCode}`;
+                codeDisplay.style.display = "block";
+
+                // Remplit automatiquement les champs avec le code généré (simulation)
+                const codeInputs = document.querySelectorAll(".verification-input");
+                for (let i = 0; i < generatedCode.length; i++) {
+                    codeInputs[i].value = generatedCode[i];
+                }
+
+                document.getElementById("verification-section").classList.remove("hidden");
+            } else {
+                // Affiche le message d'erreur
+                errorMessage.style.display = "block";
+                identifierInput.focus();
             }
         }
 
@@ -130,28 +188,35 @@
                 alert("Code invalide !");
                 // Réinitialise les champs
                 document.getElementById("verification-section").classList.add("hidden");
-                document.getElementById("email").value = "";
+                document.getElementById("identifier").value = "";
                 codeInputs.forEach(input => input.value = "");
+                document.getElementById("generated-code").style.display = "none";
             }
         }
     </script>
 </head>
 <body>
+    <div class="logo-container">
+        <img src="{% static 'images/logo-universite.png' %}" alt="Logo de l'université">
+    </div>
+
     <div class="container">
         <h1>Connexion</h1>
-        <div id="email-section">
-            <label for="email">Adresse email</label>
-            <input type="email" id="email" placeholder="Entrez votre email" required>
+        <div id="identifier-section">
+            <label for="identifier">Identifiant (8 chiffres)</label>
+            <input type="text" id="identifier" placeholder="Entrez votre identifiant" required>
+            <div id="error-message" class="error-message">L'identifiant doit contenir exactement 8 chiffres.</div>
             <button onclick="showVerificationFields()">Envoyer le code</button>
         </div>
 
         <div id="verification-section" class="hidden">
-            <label>Entrez le code reçu par email</label>
+            <label>Entrez le code reçu</label>
+            <p id="generated-code" class="generated-code"></p>
             <div class="verification-container">
-                <input type="text" class="verification-input" maxlength="1" id="code1">
-                <input type="text" class="verification-input" maxlength="1" id="code2">
-                <input type="text" class="verification-input" maxlength="1" id="code3">
-                <input type="text" class="verification-input" maxlength="1" id="code4">
+                <input type="text" class="verification-input" maxlength="1">
+                <input type="text" class="verification-input" maxlength="1">
+                <input type="text" class="verification-input" maxlength="1">
+                <input type="text" class="verification-input" maxlength="1">
             </div>
             <button onclick="submitCode()">Vérifier le code</button>
         </div>
