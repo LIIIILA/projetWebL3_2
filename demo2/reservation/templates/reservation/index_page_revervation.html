@@ -7,7 +7,6 @@
     <title>Réserver une salle</title>
     <link rel="stylesheet" href="{% static 'reservation/style.css' %}">
     
-    <!-- Ajouter le CSS de Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -19,17 +18,19 @@
             const mm = String(today.getMonth() + 1).padStart(2, '0'); // Mois au format "MM"
             const dd = String(today.getDate()).padStart(2, '0'); // Jour au format "DD"
             const limitDate = new Date(today.getFullYear(), 6, 19);
+            
             // Initialiser Flatpickr
             flatpickr("#reservation-date", {
                 minDate: `${yyyy}-${mm}-${dd}`, // La date minimale sera aujourd'hui
                 disable: [
                     function(date) {
-                        // Désactiver les week-ends (samedi = 6, dimanche = 0)
                         return date.getDay() === 0 || date.getDay() === 6|| date > limitDate;
                     }
                 ],
-                dateFormat: "d-m-Y", // Format de la date
+                dateFormat: "d-m-Y", 
             });
+
+
         });
     </script>
 </head>
