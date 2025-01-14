@@ -1,6 +1,5 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,13 +10,14 @@
         /* Styles généraux */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #b9b9b9; /* Fond rouge clair */
+            background-color: #b9b9b9; /* Fond gris clair */
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            position: relative; /* Permet de positionner des éléments relativement à la page */
         }
 
         .container {
@@ -27,19 +27,20 @@
             padding: 30px;
             width: 350px;
             text-align: center;
-            border-top: 5px solid #dc3545; /* Ligne rouge */
+            border-top: 5px solid #dc3545; /* Bordure rouge */
             position: relative;
         }
 
-        .header {
+        /* Section pour le logo */
+        .logo-container {
             position: absolute;
-            top: -80px; /* Positionnement au-dessus de la boîte */
-            left: -10px;
+            top: 20px;
+            left: 20px;
         }
 
-        .header img {
-            width: 100px; /* Taille du logo */
-            height: auto;
+        .logo-container img {
+            height: 50px; /* Ajuste la taille du logo */
+            width: auto;
         }
 
         h1 {
@@ -195,11 +196,11 @@
     </script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="{% static 'image/logo-universite.png' %}" alt="Logo de l'université">
+    <div class="logo-container">
+        <img src="{% static 'images/logo-universite.png' %}" alt="Logo de l'université">
+    </div>
 
-        </div>
+    <div class="container">
         <h1>Connexion</h1>
         <div id="identifier-section">
             <label for="identifier">Identifiant (8 chiffres)</label>
