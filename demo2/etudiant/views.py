@@ -22,6 +22,9 @@ def login(request):
     # Logique de la vue (par exemple, rendre un formulaire de connexion)
     return render(request, 'etudiant/login.html')
 
+def login_view(request):
+    return render(request, 'login.html')
+
 def connexion(request):
     # Logique de la vue (par exemple, rendre un formulaire de connexion)
     return render(request, 'etudiant/connexion.html')
@@ -129,3 +132,39 @@ def send_test_email(request):
     )
     return HttpResponse("Test email has been sent!")
 
+def envoyer_code_verification(request):
+    # Générer un code de vérification
+    verification_code = generate_verification_code()
+
+    # Envoyer le code par e-mail
+    subject = "Votre code de vérification"
+    message = f"Votre code de vérification est : {verification_code}"
+    from_email = 'votre.email@gmail.com'
+    recipient_list = ['utilisateur@example.com']  # À remplacer par l'adresse e-mail de l'utilisateur
+
+    send_mail(subject, message, from_email, recipient_list)
+
+    # Afficher un message de confirmation ou rediriger
+    return render(request, 'confirmation.html', {'message': 'Code envoyé!'})
+
+def send_verification_email(request):
+    if request.method == "POST":
+        identifier = request.POST.get('identifier')
+        if len(identifier) == 8 and identifier.isdigit():  # Vérifie si l'identifiant est valide
+            email = f"{identifier}@parisnanterre.fr"
+            
+            # Génère un code de vérification aléatoire
+            verification_code = random.randint(1000, 9999)
+            
+            # Envoie l'email avec le code de vérification
+            subject = "Code de Vérification"
+            message = f"Votre code de vérification est : {verification_code}"
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [email]
+            
+            send_mail(subject, message, from_email, recipient_list)
+            
+            return HttpResponse("Code envoyé à votre adresse e-mail.")
+        else:
+            return HttpResponse("Identifiant invalide. Veuillez entrer un identifiant de 8 chiffres.")
+    return HttpResponse("Méthode POST requise.")

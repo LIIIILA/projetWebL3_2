@@ -135,12 +135,12 @@ STATICFILES_DIRS = [
     BASE_DIR / "etudiant/static",
     BASE_DIR / "reservation/static",
 ]
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Serveur SMTP de Gmail
-EMAIL_PORT = 587  # Port pour TLS
-EMAIL_USE_TLS = True  # Utiliser TLS
-EMAIL_HOST_USER = 'ton.email@gmail.com'  # Ton adresse email
-EMAIL_HOST_PASSWORD = 'ton_mot_de_passe'  # Ton mot de passe
-DEFAULT_FROM_EMAIL = 'ton.email@gmail.com'  # Email par défaut pour l'expéditeur
+EMAIL_HOST = 'smtp.gmail.com'  # Utilisez votre fournisseur d'e-mail
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'votre.email@gmail.com'
+EMAIL_HOST_PASSWORD = 'votre_mot_de_passe'
 
 
