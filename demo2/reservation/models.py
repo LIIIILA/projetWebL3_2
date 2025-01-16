@@ -13,7 +13,7 @@ class Box(models.Model):
     site = models.ForeignKey('Site', on_delete=models.CASCADE)  
     opening_time = models.TimeField(default="09:00")  # Heure d'ouverture (par défaut 9h)
     closing_time = models.TimeField(default="19:00")  # Heure de fermeture (par défaut 19h)    
-    def __str__(self):
+    def _str_(self):
         return self.nom
 
 
@@ -24,14 +24,14 @@ class Reservation(models.Model):
     start_time = models.TimeField()  # Heure de début
     end_time = models.TimeField()    # Heure de fin    
     date = models.DateField(default=datetime.date.today)
-    def __str__(self):
-        return f"Reservation: {self.id_etudiant} - Box: {self.box.nom}"
+    def _str_(self):
+        return f"Reservation: {self.id_etudiant} - Box: {self.box.nom}  du {self.date} de {self.start_time} à {self.end_time}"
     
     
     
 class Site(models.Model):
     nom=models.CharField(max_length=100)
-    def __str__(self):
+    def _str_(self):
         return self.nom
     
 
@@ -40,5 +40,5 @@ class plageHoraire(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
 
-    def __str__(self):
+    def _str_(self):
         return f"{self.start_time} - {self.end_time}"
