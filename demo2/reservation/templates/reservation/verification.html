@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résumé de votre réservation</title>
+    <style>
+        /* Ajoutez ici vos styles CSS personnalisés */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .card-action {
+            background: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+        .btn {
+            background-color: #d32f2f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .btn:hover {
+            background-color: #c62828;
+        }
+        .card-panel {
+            background-color: #ffecb3;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- Vous pouvez ajouter un menu de navigation ici si nécessaire -->
+        </nav>
+    </header>
+
+    <div class="container">
+        {% if message %}
+            <div class="card-panel red lighten-4">
+                <p class="red-text text-darken-4 center-align">{{ message }}</p>
+            </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-content">
+                <h5>Résumé de la réservation :</h5>
+                <p><strong>Box :</strong> {{ box.nom }} ({{ box.site.nom }})</p>
+                <p><strong>Date :</strong> {{ date }}</p>
+                <p><strong>Heure de début :</strong> {{ start_time|date:"H:i" }}</p>
+                <p><strong>Heure de fin :</strong> {{ end_time|date:"H:i" }}</p>
+            </div>
+
+            <div class="card-action">
+                <form method="post" action="{% url 'validation' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="box_id" value="{{ box.id }}">
+                    <input type="hidden" name="selected_hour" value="{{ start_time|date:"H:i" }}">
+                    <input type="hidden" name="date" value="{{ date }}">
+                    <button type="submit" class="btn red darken-3 waves-effect waves-light">Confirmer la réservation</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card-panel amber lighten-4">
+            <p class="amber-text text-darken-4 center-align">
+                Si les informations ci-dessus sont correctes, cliquez sur "Confirmer la réservation" pour finaliser.
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <p style="text-align:center; padding: 10px; background-color: #333; color: white;">&copy; 2025 Mon site Web</p>
+    </footer>
+</body>
+</html>

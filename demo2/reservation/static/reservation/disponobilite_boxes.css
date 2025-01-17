@@ -1,0 +1,78 @@
+.card {
+    margin-bottom: 20px; /* Espacement entre les cartes */
+    padding: 15px; /* Espacement interne pour le contenu */
+}
+.flex-container{
+    padding: 60px; /* Espacement interne pour le contenu */
+}
+
+.hours-container {
+    text-align: center;
+}
+
+.hours-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Flexible grid */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.hour-btn {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.hour-btn.available {
+    background-color: #4caf50;
+    color: white;
+}
+
+.hour-btn:hover:not(.unavailable):not(:disabled) {
+    background-color: #388e3c;
+}
+
+
+.hour-btn:disabled {
+    background-color: #9e9e9e; /* Gris */
+    color: white; /* Texte en blanc */
+    cursor: not-allowed; /* Curseur d'interdiction */
+    opacity: 0.6; /* Légère transparence */
+}
+
+.hour-btn:disabled:hover {
+    background-color: #9e9e9e; /* Conserver la couleur grise */
+    color: #ffffff; /* Couleur du texte blanche (optionnel) */
+}
+.selected {
+    background-color: #3c7e2c !important;  /* Couleur foncée */
+    color: white !important;  /* Texte blanc pour un meilleur contraste */
+}
+
+footer{
+    margin-top: 3%;
+}
+
+
+.brand-logo {
+    text-decoration: none; 
+    color: black; 
+    display: flex; 
+    
+   
+}
+
+.brand-logo img {
+    margin-right: 10px; 
+    width: 27%; /* Ajuste la taille de l'image */
+    height: auto; /* Garde les proportions de l'image */
+    margin-top: 10px;
+}
+
+.logo-text {
+    font-size: 20px; 
+    margin-bottom: 20%; /* Supprime le margin-top pour un meilleur alignement */
+}
