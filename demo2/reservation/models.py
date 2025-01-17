@@ -1,42 +1,84 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from etudiant.models import Etudiant  
 from datetime import timedelta
-import datetime
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 
 
+# Modèle Salle
+class Salle(models.Model):
+    nom = models.CharField(max_length=100)
+    description = models.TextField()
+    salle = models.IntegerField()
+    places = models.IntegerField()
+    heure_debut = models.TimeField(default="08:30")
+    heure_fin = models.TimeField(default="20:30")
+    duree_creneau = models.DurationField(default=timedelta(minutes=15))
 
-# Create your models here.
+    def __str__(self):
+        return self.nom
+
+    def clean(self):
+        # Validation : heure_debut doit précéder heure_fin
+        if self.heure_debut >= self.heure_fin:
+            raise ValidationError("L'heure de début doit être avant l'heure de fin.")
+
+    class Meta:
+        verbose_name = "Salle"
+        verbose_name_plural = "Salles"
+
+
+# Modèle Box (lié à une Salle)
 class Box(models.Model):
-    nom = models.CharField(max_length=100)  # Nom ou numéro de la box
-    capacity = models.IntegerField()         # Capacité de la box
-    site = models.ForeignKey('Site', on_delete=models.CASCADE)  
-    opening_time = models.TimeField(default="09:00")  # Heure d'ouverture (par défaut 9h)
-    closing_time = models.TimeField(default="19:00")  # Heure de fermeture (par défaut 19h)    
+    numero = models.CharField(max_length=50)
+    salle = models.ForeignKey(Salle, on_delete=models.CASCADE, related_name="boxes")
+    disponible = models.BooleanField(default=True)
+
     def __str__(self):
-        return self.nom
+        return f"Box {self.numero} ({'Disponible' if self.disponible else 'Occupé'})"
 
 
+# Modèle Étudiant, basé sur AbstractUser
+class Etudiant(AbstractUser):
+    date_of_birth = models.DateField(null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    numero_etudiant = models.CharField(max_length=8, unique=True)
 
+    class Meta:
+        db_table = 'etudiant_etudiant'
+
+    def __str__(self):
+        return self.numero_etudiant
+
+
+# Modèle Reservation
 class Reservation(models.Model):
-    id_etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)  # Utilisateur qui réserve
-    box = models.ForeignKey(Box, on_delete=models.CASCADE,related_name="reservations")           # Box réservée
-    start_time = models.TimeField()  # Heure de début
-    end_time = models.TimeField()    # Heure de fin    
-    date = models.DateField(default=datetime.date.today)
+    salle = models.ForeignKey(
+        'reservation.Salle',
+        on_delete=models.CASCADE,
+        related_name='reservations'
+    )
+    utilisateur = models.ForeignKey(
+        Etudiant,
+        on_delete=models.CASCADE,
+        related_name='reservations'
+    )
+    date = models.DateTimeField()
+
     def __str__(self):
-        return f"Reservation: {self.id_etudiant} - Box: {self.box.nom}"
-    
-    
-    
+        return f"Réservation de {self.salle.nom} le {self.date}"
+
+
+
 class Site(models.Model):
-    nom=models.CharField(max_length=100)
+    nom = models.CharField(max_length=100)
+    adresse = models.TextField()
+
     def __str__(self):
         return self.nom
-    
 
 class plageHoraire(models.Model):
-    site = models.ForeignKey('Site', on_delete=models.CASCADE)
     start_time = models.TimeField()
     end_time = models.TimeField()
 

@@ -17,6 +17,8 @@ from django.conf import settings
 from .forms import LoginForm
 from django.http import HttpResponse
 
+from .models import Etudiant
+
 
 def login(request):
     # Logique de la vue (par exemple, rendre un formulaire de connexion)
@@ -168,3 +170,14 @@ def send_verification_email(request):
         else:
             return HttpResponse("Identifiant invalide. Veuillez entrer un identifiant de 8 chiffres.")
     return HttpResponse("Méthode POST requise.")
+
+def reservation_page(request):
+    # Récupérer l'étudiant connecté
+    etudiant = Etudiant.objects.get(user=request.user)
+
+    # Ajouter d'autres données nécessaires pour la réservation
+    context = {
+        'numero_etudiant': etudiant.numero_etudiant,
+        # Ajoute ici les autres données à afficher sur la page
+    }
+    return render(request, 'reservation/reservation.html', context)
