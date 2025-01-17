@@ -1,3 +1,4 @@
+/* Mise en page globale */
 html, body {
     height: 100%; /* Assurez-vous que html et body couvrent toute la hauteur de la fenêtre */
     margin: 0; /* Enlevez les marges par défaut */
@@ -18,6 +19,7 @@ body {
     justify-content: center; /* Centre verticalement */
 }
 
+/* Container principal */
 .container {
     position: relative;
     z-index: 5; /* Assurez-vous que la partie visible du contenu est au-dessus de l'image */
@@ -38,8 +40,8 @@ header {
     font-size: larger;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajoute une légère ombre sous le header */
     height: 10%; /* Augmente la hauteur du header */
+    padding: 10px; /* Padding pour aérer le header */
 }
-
 
 header div {
     display: flex;
@@ -52,6 +54,7 @@ header div img {
     margin-right: 10px;
 }
 
+/* Styles pour le titre et sous-titre */
 h1 {
     margin: 100px 0 20px 0; /* Espace supplémentaire en haut pour que le header ne cache pas le texte */
     font-size: 2.5rem; /* Taille du titre */
@@ -62,6 +65,7 @@ h2 {
     margin-bottom: 20px;
 }
 
+/* Formulaire et éléments associés */
 form {
     margin: 20px 0;
 }
@@ -74,63 +78,101 @@ input, button {
     border: 1px solid #ccc;
 }
 
+
+/* Styles pour le logo */
+.brand-logo {
+    text-decoration: none; 
+    color: black; 
+    display: flex; 
+    align-items: center; 
+}
+
+.brand-logo img {
+    margin-right: 10px; 
+    width: 25%;
+}
+
+/* Apparence du bouton de recherche */
 button {
-    background-color: #ffffff; /* Vert pour le bouton */
-    color: rgb(19, 19, 19);
+    margin-top: 20px;
+    background-color: #f53c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 button:hover {
-    background-color: #d6d6d6; /* Changement de couleur au survol */
+    background-color: #da2222; /* Changement de couleur au survol */
 }
 
-.footer-links {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
+/*******************************/
+.select-container {
+    position: relative; /* Positionnement pour gérer l'icône */
+    display: inline-block;
+    width: 100%; /* Largeur du conteneur */
+  }
+  
+  .transparent-select {
+    -webkit-appearance: none; /* Supprime le style par défaut */
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent; /* Fond transparent */
+    border: 1px solid #ccc; /* Bordure légère */
+    border-radius: 5px; /* Coins arrondis */
+    color: white; /* Couleur du texte */
+    font-size: 16px; /* Taille de la police */
+    padding: 10px; /* Espacement interne */
+    padding-right: 40px; /* Place pour l'icône */
+    width: 100%; /* Largeur complète */
+    box-sizing: border-box;
+  }
+  
+  .material-symbols-outlined {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Positionnement à droite */
+    transform: translateY(-50%); /* Centrage vertical */
+    font-size: 24px; /* Taille de l'icône */
+    color: white; /* Couleur de l'icône */
+    pointer-events: none; /* L'icône n'intercepte pas les clics */
+  }
+
+/****************************/
+
+/* Modifier la couleur du texte des options */
+.select-wrapper input.select-dropdown {
+    color: rgb(255, 241, 241) !important; /* Texte blanc pour le champ sélectionné */
 }
 
-.footer-links div {
-    margin: 0 20px;
-    text-align: center;
+/* Modifier la couleur du texte des options */
+.select-wrapper ul li {
+    color: rgb(255, 247, 247) !important; /* Texte blanc pour les options dans le menu déroulant */
 }
 
-.footer-links img {
-    width: 40px;
-    height: 40px;
+/* Modifier la couleur du fond du select au focus et survol */
+.select-wrapper input.select-dropdown:focus,
+.select-wrapper input.select-dropdown.active {
+    border-bottom: 1px solid #d32f2f !important; /* Bordure rouge lors du focus */
+    box-shadow: 0 1px 0 0 #d32f2f !important; /* Ombre rouge lors du focus */
 }
 
-.footer-links p {
-    color: white; /* Texte des liens du footer en blanc */
+/* Modifier la couleur du fond du select au survol */
+.select-wrapper input.select-dropdown:hover {
+    border-bottom: 1px solid #d32f2f !important; /* Bordure rouge lors du survol */
 }
+.select-container:hover .material-symbols-outlined {
+    color:  #d32f2f !important;
+  }
 
-/* Logo dans le header */
-.logo {
-    width: 30%; /* Largeur du logo ajustée */
-    height: auto;
-}
 
-/* Spécifique aux éléments select (comme les sites) */
-select {
-    -webkit-appearance: none; /* Supprime le style par défaut du select pour le rendre plus uniforme */
-    -moz-appearance: none; /* Idem pour Firefox */
-    appearance: none; /* Empêche les styles par défaut du select */
-    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Circle-icons-arrow-down.svg/32px-Circle-icons-arrow-down.svg.png') no-repeat scroll right center;
-    background-size: 15px;
-    font-size: 16px; /* Taille de la police dans le select */
-    padding: 10px; /* Padding interne, pour agrandir le champ */
-    width: 20%; /* S'assure que le select prend toute la largeur du conteneur */
-    border-radius: 5px; /* Coins arrondis pour un style plus moderne */
-    border: 1px solid #ccc; /* Bordure fine autour du select */
-    color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
+#reservation-date{
+    color: rgb(255, 255, 255);
+  }
 
-}
-
-select option{
-    color: rgb(0, 0, 0);
-    background-color: #ffffff;
-
-    
+.flatpickr-input {
+    color: white !important; /* S'assurer que le texte de la date est blanc */
 }
 

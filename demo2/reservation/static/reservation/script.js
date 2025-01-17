@@ -1,50 +1,63 @@
-/*document.addEventListener('DOMContentLoaded', function () {
-    const reservationForm = document.getElementById('reservation-form');
-
-    reservationForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Empêche le formulaire de soumettre normalement
-
-        // Récupérer les données du formulaire
-        const box = document.getElementById('box').value;
-        const date = document.getElementById('date').value;
-        const time = document.getElementById('time').value;
-
-        // Créer un objet pour la réservation
-        const reservation = {
-            box: box,
-            date: date,
-            time: time
-        };
-
-        // Récupérer l'historique existant ou créer un tableau vide
-        let historyList = JSON.parse(localStorage.getItem('reservations')) || [];
-
-        // Ajouter la nouvelle réservation à l'historique
-        historyList.push(reservation);
-
-        // Sauvegarder à nouveau l'historique dans le localStorage
-        localStorage.setItem('reservations', JSON.stringify(historyList));
-
-        // Optionnellement, afficher un message de confirmation ou réinitialiser le formulaire
-        alert('Réservation effectuée avec succès !');
-        reservationForm.reset(); // Réinitialise le formulaire après soumission
-    });
-});*/
 document.addEventListener('DOMContentLoaded', function() {
     const today = new Date();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0'); // Mois au format "MM"
     const dd = String(today.getDate()).padStart(2, '0'); // Jour au format "DD"
-    const limitDate = new Date(today.getFullYear(), 6, 19);
+    const limitDate = new Date(today.getFullYear(), 6, 19); // 19 juillet de l'année en cours
+    
     // Initialiser Flatpickr
     flatpickr("#reservation-date", {
         minDate: `${yyyy}-${mm}-${dd}`, // La date minimale sera aujourd'hui
         disable: [
             function(date) {
-                // Désactiver les week-ends (samedi = 6, dimanche = 0)
-                return date.getDay() === 0 || date.getDay() === 6|| date > limitDate;
+                return date.getDay() === 0 || date.getDay() === 6 || date > limitDate; // Désactiver les week-ends et après le 19 juillet
             }
         ],
-        dateFormat: "d-m-Y", // Format de la date
+        altInput: true,
+        altFormat: "d-m-Y", // Format utilisé pour le champ visible
+        dateFormat: "d-m-Y", // Le format de date d'affichage
+    });
+
+
+    
+
+
+    
+});
+document.querySelectorAll('.hour-btn').forEach(function(button) {
+    button.addEventListener('click', function() {      
+        if (button.hasAttribute('disabled')) {
+            return; // Empêcher toute action si le bouton est désactivé
+        }
+
+        // Récupérer l'heure et l'ID de la box
+        const selectedHour = button.getAttribute('data-hour');
+        const boxId = button.getAttribute('data-box-id');
+       
+       
+        // Mettre à jour le champ caché pour cette box
+        document.getElementById(`selected-hour-${boxId}`).value = selectedHour;
+
+        // Désélectionner les autres boutons pour cette box
+        document.querySelectorAll(`.hour-btn[data-box-id="${boxId}"]`).forEach(function(btn) {
+            btn.classList.remove('selected');
+        });
+        button.classList.add('selected');
+
+        // Activer ou désactiver le bouton de réservation de la box
+        toggleReserveButton(boxId);
     });
 });
+
+// Fonction pour activer/désactiver le bouton de réservation en fonction de l'heure sélectionnée
+function toggleReserveButton(boxId) {
+    var selectedHour = document.getElementById(`selected-hour-${boxId}`).value;
+    var reserveButton = document.getElementById(`reserve-button-${boxId}`);
+    
+    // Si une heure est sélectionnée, activer le bouton "Réserver"
+    if (selectedHour) {
+        reserveButton.disabled = false;
+    } else {
+        reserveButton.disabled = true;
+    }
+}

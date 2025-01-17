@@ -1,97 +1,270 @@
 
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render
 from .models import Box, Reservation, Site
-#from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
-from django.db.models import Q
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login
 
-# Create your views here.
-from datetime import datetime, timedelta
-from datetime import datetime, timedelta
 
-def reservation_index(request):
-    hours = [] 
+def genration_horaires():
+    hours = []
     start_time = datetime.strptime("08:30", "%H:%M")
     end_time = datetime.strptime("18:45", "%H:%M")
-    
+
     current_time = start_time
     while current_time <= end_time:
-        hours.append(current_time.strftime('%H:%M'))  # Ajouter l'heure formatée à la liste
-        current_time += timedelta(minutes=15)         # Ajouter 15 minutes
+        hours.append(current_time.strftime('%H:%M'))
+        current_time += timedelta(minutes=15)
+    
+    return hours
 
-    #######################################################################
-        
-    sites = Site.objects.all()  # Récupère tous les sites de réservation
 
+def validation_datetime(date, start_time, end_time):  
+    try:
+        start_datetime = datetime.strptime(f"{date} {start_time}", "%d-%m-%Y %H:%M")
+        end_datetime = datetime.strptime(f"{date} {end_time}", "%d-%m-%Y %H:%M")
+    except ValueError:
+        return False, 'Format de date ou d\'heure invalide.'
+    
+    if start_datetime >= end_datetime:
+        return False, 'L\'heure de début doit être avant l\'heure de fin.'
+    
+    return True, start_datetime, end_datetime
+
+
+def get_sites():
+    return Site.objects.all()
+
+
+
+def reservation_index(request):
+    # Générer les horaires possibles
+    hours = genration_horaires()
+    sites = get_sites()
+    
     if request.method == 'POST':
         site_id = request.POST.get('site_id')  # ID du site sélectionné
-        date = request.POST.get('date')  # Récupérer la date choisie
+        date = request.POST.get('date')        # Date choisie
         start_time = request.POST.get('start_time')  # Heure de début
-        end_time = request.POST.get('end_time')  # Heure de fin
+        end_time = request.POST.get('end_time')      # Heure de fin
 
-        try:
-            # Combiner la date et les heures en objets datetime
-            start_datetime = datetime.strptime(f"{date} {start_time}", "%d-%m-%Y %H:%M")
-            end_datetime = datetime.strptime(f"{date} {end_time}", "%d-%m-%Y %H:%M")
-        except ValueError:
-            return render(request, 'reservation/index.html', {
+        # Validation des dates et heures
+        is_valid, *validation_result = validation_datetime(date, start_time, end_time)
+        print(f"Validation result index: {is_valid}, {validation_result}")  # Log pour déboguer
+
+        if not is_valid:
+            return render(request, 'reservation/disponibilite_boxes.html', {
                 'sites': sites,
                 'hours': hours,
-                'error': 'Format de date ou d\'heure invalide.',
+                'error': validation_result[0],  # Message d'erreur retourné
             })
+        else:
+            # Si la validation est réussie, extraire les objets datetime de la validation
+            start_datetime, end_datetime = validation_result[0], validation_result[1]  # Extraction correcte des objets datetime
+
+            print(f"def index : Start datetime: {start_datetime}, End datetime: {end_datetime}")  # Log pour vérifier les objets datetime
+
+            return redirect('disponibilite_boxes', site_id=site_id, date=date, start_time=start_time, end_time=end_time)
+
+    # Si ce n'est pas une requête POST, afficher le formulaire
+    return render(request, 'reservation/index.html', {
+        'sites': sites,
+        'hours': hours,
+    })
 
 
-        # Rediriger vers la page des boxes disponibles avec les paramètres
-        return redirect('disponibilite_boxes', site_id=site_id, start_time=start_time, end_time=end_time,date=date)
-    
-    return render(request, 'reservation/index.html', {'sites': sites,'hours': hours})
+def disponibilite_boxes(request, site_id, date, start_time, end_time):
+    hours = genration_horaires()
+    sites = get_sites()
 
-
-def disponibilite_boxes(request, site_id, start_time, end_time, date):
+    # Convertir les chaînes en objets datetime
     try:
-        # Convertir les chaînes en objets datetime
-        start_time = datetime.strptime(f"{date} {start_time}", "%d-%m-%Y %H:%M")
-        end_time = datetime.strptime(f"{date} {end_time}", "%d-%m-%Y %H:%M")
-    except ValueError as e:
+        start_datetime = datetime.strptime(f"{date} {start_time}", "%d-%m-%Y %H:%M")
+        end_datetime = datetime.strptime(f"{date} {end_time}", "%d-%m-%Y %H:%M")
+    except ValueError:
         return render(request, 'reservation/disponibilite_boxes.html', {
-            'error': f"Format de date ou d'heure invalide : {e}"
+            'sites': sites,
+            'hours': hours,
+            'error': "Format de date ou d'heure invalide.",  # Message d'erreur
         })
-    
+
+
+    # Log de validation réussi
+    print(f"Start datetime: {start_datetime}, End datetime: {end_datetime}")
+
     # Filtrer les boxes ouvertes dans la plage horaire demandée
     all_boxes = Box.objects.filter(
         site_id=site_id,
-        opening_time__lte=start_time.time(),  # Comparer avec l'heure d'ouverture
-        closing_time__gte=end_time.time()     # Comparer avec l'heure de fermeture
+        opening_time__lte=start_datetime.time(),  # Comparer avec l'heure d'ouverture
+        closing_time__gte=end_datetime.time()   # Comparer avec l'heure de fermeture
     )
-
-    print("All boxes:", all_boxes)  # Log pour voir si des boxes sont récupérées
+    
+    print(f"All boxes: {all_boxes}")  # Log pour vérifier les boxes récupérées
 
     # Filtrer les réservations qui chevauchent la plage horaire
     overlapping_reservations = Reservation.objects.filter(
         box__site_id=site_id,
-        date=start_time.date(),  # Filtrer par la date
-        start_time__lt=end_time.time(),  # Réservations qui commencent avant l'heure de fin
-        end_time__gt=start_time.time()   # Réservations qui se terminent après l'heure de début
-    ).values_list('box_id', flat=True)
+        date=start_datetime.date(),  # Filtrer par la date
+        start_time__lt=end_datetime.time(),  # Réservations qui commencent avant l'heure de fin
+        end_time__gt=start_datetime.time()   # Réservations qui se terminent après l'heure de début
+    ).values_list('box_id', 'start_time', 'end_time')
 
-    print("Overlapping reservations:", overlapping_reservations)  # Log pour vérifier les réservations qui chevauchent
+    #.values_list('box_id', flat=True)
+    
+    print(f"Overlapping reservations: {overlapping_reservations}")  # Log pour vérifier les réservations qui chevauchent
+
+    reserved_timeslots = []
+
+    # Ajouter tous les créneaux réservés pour les boxes
+    for reservation in overlapping_reservations:
+        reserved_timeslots.append({
+            'box_id': reservation[0],
+            'start_time': reservation[1],
+            'end_time': reservation[2]
+        })
 
     # Exclure les boxes réservées
-    available_boxes = all_boxes.exclude(id__in=overlapping_reservations)
+    #available_boxes = all_boxes.exclude(id__in=overlapping_reservations)
 
-    print("Available boxes:", available_boxes)  # Log pour voir les boxes disponibles
+    disponibilites = []
 
+    for box in all_boxes:
+        disponibilites_crenaux = []
+        
+        for hour in hours:
+            if start_datetime.time() <= datetime.strptime(hour, "%H:%M").time() < end_datetime.time():
+                is_reserved = False
+                
+                # Vérifier si ce créneau est réservé pour cette box
+                for reservation in overlapping_reservations:
+                    #if reservation[0] == box.id and reservation[1] == start_datetime.time() and reservation[2] == end_datetime.time():
+                    if reservation[0] == box.id and reservation[1] <= datetime.strptime(hour, "%H:%M").time() < reservation[2]:
+                        is_reserved = True
+                        break
+                #hour': reservation.start_time avt : hour': start_time
+                disponibilites_crenaux.append({'hour': hour, 'is_reserved': is_reserved})
+        
+        disponibilites.append({'box': box, 'disponibilites_crenaux': disponibilites_crenaux})
+
+    #print(f"Available boxes: {available_boxes}")  # Log pour vérifier les boxes disponibles
+
+    
     return render(request, 'reservation/disponibilite_boxes.html', {
-        'boxes': available_boxes,
+        #'boxes': available_boxes,
+        'disponibilites': disponibilites,
+        'start_time': start_datetime,
+        'end_time': end_datetime,
+        'site_id': site_id,
+        'date':  start_datetime.strftime("%Y-%m-%d"),
+        'hours': hours,
+        'sites': sites
+    })
+
+
+
+
+def verification(request):
+    if request.method == 'POST':
+        box_id = request.POST.get('box_id')
+        selected_hour = request.POST.get('selected_hour')
+        date = request.POST.get('date')
+        print(f"Date: {date}, Box ID: {box_id}, Selected Hour: {selected_hour}") 
+
+        if not request.user.is_authenticated:
+            request.session['reservation_data'] = {
+                'box_id': box_id,
+                'selected_hour': selected_hour,
+                'date': date,
+            }
+            return redirect('identification')
+        else:
+            box = Box.objects.get(id=box_id)      
+            start_time = datetime.strptime(selected_hour, '%H:%M')
+            end_time = start_time + timedelta(minutes=15)
+
+        return render(request, 'reservation/verification.html', {
+            'message': 'Veuillez valider la réservation.',
+            'box':box,
+            'date':date,
+            'start_time': start_time,
+            'end_time': end_time,
+            })
+    
+    
+
+def identification(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)  # Formulaire avec les données soumises
+        if form.is_valid():
+            user = form.get_user()  # Récupère l'utilisateur validé
+            login(request, user)  # Connecte l'utilisateur
+
+            
+            reservation_data = request.session.get('reservation_data')
+            if reservation_data:
+                return redirect('validation')
+
+            return redirect('index_reservation')  # Sinon, redirige vers la page d'accueil
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'reservation/login.html', {'form': form})
+
+def validation(request):
+    # Vérifie si les données de réservation existent dans la session
+    reservation_data = request.session.get('reservation_data')
+
+    # Si l'utilisateur est déjà connecté, les données doivent être récupérées même sans la session
+    if not reservation_data and request.user.is_authenticated:
+        # Si l'utilisateur est authentifié et qu'il n'y a pas de données dans la session, on récupère les données du formulaire (par exemple via un POST)
+        box_id = request.POST.get('box_id')
+        selected_hour = request.POST.get('selected_hour')
+        date = request.POST.get('date')
+
+        reservation_data = {
+            'box_id': box_id,
+            'selected_hour': selected_hour,
+            'date': date
+        }
+
+    if not reservation_data:
+        return redirect('reservation_index')  # Redirige si aucune donnée n'est trouvée
+
+    # Récupère les données de la réservation
+    box_id = reservation_data['box_id']
+    selected_hour = reservation_data['selected_hour']
+    date = reservation_data['date']
+
+    print(f"Réservation confirmée : Box ID: {box_id}, Hour: {selected_hour}, Date: {date}")
+    
+    # Récupère les détails de la réservation
+    box = Box.objects.get(id=box_id)
+    start_time = datetime.strptime(selected_hour, '%H:%M')
+    end_time = start_time + timedelta(minutes=15)
+
+    # Sauvegarde de la réservation dans la base de données
+    reservation = Reservation(
+            box=box,
+            id_etudiant=request.user,
+            date=date,
+            start_time=start_time,
+            end_time=end_time
+        )
+    reservation.save()
+
+    # Supprimez les données de la session après validation
+    if 'reservation_data' in request.session:
+        del request.session['reservation_data']
+
+    return render(request, 'reservation/validation.html', {
+        'message': 'Réservation confirmée !',
+        'box': box,
+        'date': date,
         'start_time': start_time,
         'end_time': end_time,
-        'site_id': site_id,
     })
 
-def index_page_reservation(request):
-    reservations = Reservation.objects.all()
-    boxes = Box.objects.all()  # Récupérer toutes les boxes
-    return render(request, 'reservation/index_page_reservation.html', {'boxes': boxes,'reservations': reservations}) 
 
 
 
@@ -99,75 +272,3 @@ def index_page_reservation(request):
 
 
 
-
-
-
-
-''' gestion reservation 15min
-def get_available_slots(box, date):
-    opening = datetime.combine(date, box.opening_time)
-    closing = datetime.combine(date, box.closing_time)
-    delta = timedelta(minutes=15)
-    slots = []
-
-    # Générer les tranches horaires
-    current = opening
-    while current + delta <= closing:
-        slots.append(current)
-        current += delta
-
-    # Exclure les créneaux déjà réservés
-    reservations = Reservation.objects.filter(box=box, start_time__date=date)
-    for reservation in reservations:
-        reserved_start = reservation.start_time
-        reserved_end = reservation.end_time
-        slots = [slot for slot in slots if not (reserved_start <= slot < reserved_end)]
-
-    return slots
-
-
-def reserve_box(request, box_id):
-    #box = Box.objects.get(id=box_id)
-    box = get_object_or_404(Box, id=box_id)
-    date = datetime.today().date()
-    available_slots = get_available_slots(box, date)
-
-    if request.method == "POST":
-        slot = request.POST.get('slot')  # Format : "YYYY-MM-DD HH:MM"
-        slot_datetime = datetime.fromisoformat(slot)
-        if slot_datetime.date() < datetime.today().date() or slot_datetime.weekday() >= 5:
-            return JsonResponse({'error': "Les réservations ne sont pas possibles à cette date."}, status=400)
-
-        Reservation.objects.create(
-            box=box,
-            student=request.user,
-            start_time=slot_datetime,
-            end_time=slot_datetime + timedelta(minutes=15)
-        )
-        return render(request, 'reservation/reserve_box.html', {'box': box})
-
-    return render(request, 'reserve_box.html', {
-        'box': box,
-        'available_slots': available_slots
-    })
-
-'''
-
-
-
-
-
-'''
-@login_required
-def reservation_list(request):
-    reservations = Reservation.objects.filter(user=request.user)
-    return render(request, 'Reservation/reservation_list.html', {'reservations': reservations})
-
-@login_required
-def make_reservation(request, box_id):
-    box = get_object_or_404(Box, id=box_id)
-    if request.method == 'POST':
-        # Traitement de la réservation ici
-        pass
-    return render(request, 'Reservation/make_reservation.html', {'box': box})
-'''

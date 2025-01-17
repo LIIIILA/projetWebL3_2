@@ -1,32 +1,197 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Disponibilités des boxes</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/timelinejs/dist/timeline.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/timelinejs/dist/timeline.min.js"></script>
+    <link rel="stylesheet" href="{% static 'reservation/disponobilite_boxes.css' %}">
+
 </head>
+
+
 <body>
-    <h2>Boxes disponibles</h2>
-    <p>Site ID : {{ site_id }}</p>
-    <p>Pour la plage horaire de {{ start_time }} à {{ end_time }}</p>
+    <header>
+        <div class="navbar-fixed">
+            <nav class="red darken-3">
+                <div class="nav-wrapper container">
+                    <a href="{% url 'reservation_index' %}" class="brand-logo">
+                        <img src="{% static 'reservation/logoNanterre_fondvide.png' %}" alt="Logo" class="logo">
+                        Bibliothèque Universitaire
+                    </a>
+                    <ul class="right">
+                        <li><a href="#">Connexion</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+  
+    <div class="container">
+        <h2 class="red-text text-darken-3 center-align">Boxes disponibles le {{date}}</h2>
+        
+        <!-- Section des filtres -->
+        <div class="card-panel">
+            <form method="post" class="row" action="{% url 'reservation_index' %}">
+                {% csrf_token %}
+                
+                <!-- Filtre par site -->
+                <div class="input-field col s12 m6">
+                    <select name="site_id" id="site" class="browser-default" required>
+                        <option value="" disabled selected>Filtrer par site</option>
+                        {% for site in sites %}
+                            <option value="{{ site.id }}" {% if site.id == site_id %}selected{% endif %}>
+                                {{ site.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Date -->
+                <div class="input-field col s12 m6">
+                    <input id="reservation-date" type="text" name="date" placeholder="Choisir une date" required>
+                    <label for="reservation-date">Date</label>
+                </div>
+                
+                <!-- Heure de début -->
+                <div class="input-field col s12 m6">
+                    <select name="start_time" id="start_time" class="browser-default" required>
+                        <option value="" disabled selected>Heure de début</option>
+                        {% for hour in hours %}
+                            <option value="{{ hour }}" {% if hour == start_time %}selected{% endif %}>
+                                {{ hour }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Heure de fin -->
+                <div class="input-field col s12 m6">
+                    <select name="end_time" id="end_time" class="browser-default" required>
+                        <option value="" disabled selected>Heure de fin</option>
+                        {% for hour in hours %}
+                            <option value="{{ hour }}" {% if hour == end_time %}selected{% endif %}>
+                                {{ hour }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Bouton de recherche -->
+                <div class="col s12 center-align">
+                    <button type="submit" class="btn waves-effect red darken-3">Rechercher</button>
+                </div>
+            </form>
+        </div>
 
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% else %}
-        {% if boxes %}
-            <ul>
-                {% for box in boxes %}
-                    <li>{{ box.nom }} - Capacité : {{ box.capacite }}</li>
-                {% endfor %}
-            </ul>
+        <div class="container">
+            
+            {% if error %}
+            <div class="card-panel red lighten-4">
+                <p class="red-text text-darken-4 center-align">{{ error }}</p>
+            </div>
         {% else %}
-            <p>Aucun box disponible pour cette plage horaire.</p>
+            {% if disponibilites %}
+                <div class="row">
+                    {% for box in disponibilites %}
+                        <div class="col s12 m6 l9">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-title">{{ box.box.nom }} ({{ box.box.site.nom }})</span>
+                                    <p>{{ box.box.description|default:"Salle de travail" }}</p>
+                                    <p><i class="material-icons">groups</i> {{ box.box.capacity }} places</p>
+                                    <hr>
+        
+                                    <!-- Sélection d'heure -->
+                                    <div class="hours-container">
+                                        <h6>Choisissez une heure</h6>
+                                        <div class="hours-grid">
+                                            {% for crenaux in box.disponibilites_crenaux %}
+                                                <button
+                                                    class="hour-btn 
+                                                        {% if crenaux.is_reserved %}disabled
+                                                        {% else %}available
+                                                        {% endif %}"
+                                                        {% if crenaux.is_reserved %}disabled{% endif %}
+                                                    data-hour="{{ crenaux.hour }}"
+                                                    data-box-id="{{ box.box.id }}"
+                                                >
+                                                    {{ crenaux.hour }}
+                                                </button>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <!-- Formulaire de réservation -->
+                                <div class="card-action">
+                                    <form method="post" action="{% url 'verification' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="box_id" value="{{ box.box.id }}">
+                                        <input type="hidden" name="date" value="{{ date }}"> <!-- La date est envoyée ici comme valeur cachée -->           
+                                        <input type="hidden" id="selected-hour-{{ box.box.id }}" name="selected_hour" value="">
+                                        <button type="submit" id="reserve-button-{{ box.box.id }}" class="btn red darken-3 waves-effect waves-light" data-box-id="{{ box.box.id }}" disabled>Réserver</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card-panel amber lighten-4">
+                    <p class="amber-text text-darken-4 center-align">Aucun box disponible pour cette plage horaire.</p>
+                </div>
+            {% endif %}
         {% endif %}
-    {% endif %}    
+        
+        </div>
+    
+        <!-- Bouton retour -->
+        <div class="center-align">
+            <a href="{% url 'reservation_index' %}" class="btn-flat waves-effect">Retour</a>
+        </div>
+    </div>
+    
+    <footer class="page-footer red darken-3">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Bibliothèque Universitaire</h5>
+                    <p class="grey-text text-lighten-4">Réservez des espaces adaptés à vos besoins académiques.</p>
+                </div>
+                <div class="col l4 offset-l2 s12">
+                    <h5 class="white-text">Liens utiles</h5>
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="#">Accueil</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#">Réservations</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                © 2025 Université Paris Nanterre
+                <a class="grey-text text-lighten-4 right" href="#">Mentions légales</a>
+            </div>
+        </div>
+    </footer>
 
-<a href="{% url 'reservation_index' %}">Retour</a>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="{% static 'reservation/script.js' %}"></script>
 </body>
 </html>
+
+

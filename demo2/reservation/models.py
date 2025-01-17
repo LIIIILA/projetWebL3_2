@@ -25,7 +25,7 @@ class Reservation(models.Model):
     end_time = models.TimeField()    # Heure de fin    
     date = models.DateField(default=datetime.date.today)
     def __str__(self):
-        return f"Reservation: {self.id_etudiant} - Box: {self.box.nom}"
+        return f"Reservation: {self.id_etudiant} - Box: {self.box.nom}  du {self.date} de {self.start_time} à {self.end_time}"
     
     
     
