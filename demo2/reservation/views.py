@@ -205,11 +205,11 @@ def identification(request):
             if reservation_data:
                 return redirect('validation')
 
-            return redirect('index_reservation')  # Sinon, redirige vers la page d'accueil
+            return redirect('login')  # Sinon, redirige vers la page d'accueil
     else:
         form = AuthenticationForm()
 
-    return render(request, 'reservation/login.html', {'form': form})
+    return render(request, 'etudiant/login.html', {'form': form})
 
 def validation(request):
     # Vérifie si les données de réservation existent dans la session

@@ -6,6 +6,10 @@ from .models import Box, Reservation,Site,plageHoraire
 admin.site.register(Box)
 admin.site.register(Site)
 
+class SiteAdmin(admin.ModelAdmin):
+    list_display = ('nom', 'actif')
+    search_fields = ('nom')
+    list_filter = ('actif',)
 
 class ReservationAdmin(admin.ModelAdmin):
     list_display = ('id_etudiant','boxe','site', 'start_time', 'end_time')

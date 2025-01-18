@@ -1,10 +1,11 @@
 from django.urls import path # type: ignore
 from . import views
 from django.contrib.auth.views import LogoutView
+from django.contrib import admin
 
 urlpatterns = [
     path('', views.index, name='index'),# Page d'accueil de l'application étudiant
-
+    path('admin/', admin.site.urls),
     path('connexion/', views.connexion, name='connexion'),
     path('historique/', views.historique, name='historique'),
     path('disponibilites/', views.disponibilites, name='disponibilites'),
