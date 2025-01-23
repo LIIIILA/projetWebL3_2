@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
-
+from .forms import BoxReservationForm
 
 def genration_horaires():
     hours = []
@@ -265,6 +265,16 @@ def validation(request):
         'end_time': end_time,
     })
 
+
+def home(request):
+    if request.method == 'POST':
+        form = BoxReservationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success')  # Redirection après la réservation
+    else:
+        form = BoxReservationForm()
+    return render(request, 'home.html', {'form': form})
 
 
 

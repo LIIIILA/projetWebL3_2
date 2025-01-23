@@ -1,6 +1,6 @@
 from datetime import datetime
 from django import forms
-from .models import Site
+from .models import Site, BoxReservation
 
 class SiteSelectionForm(forms.Form):
     site = forms.ModelChoiceField(queryset=Site.objects.all(), required=True)
@@ -30,3 +30,15 @@ class ReservationForm(forms.Form):
             raise forms.ValidationError(f"Erreur dans la combinaison des dates et heures : {str(e)}")
 
         return cleaned_data
+    
+
+class BoxReservationForm(forms.ModelForm):
+    class Meta:
+        model = BoxReservation
+        fields = ['date', 'start_time', 'end_time', 'box_type']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'start_time': forms.TimeInput(attrs={'type': 'time'}),
+            'end_time': forms.TimeInput(attrs={'type': 'time'}),
+            'box_type': forms.Select(choices=[('Small', 'Petit'), ('Large', 'Grand')]),
+        }

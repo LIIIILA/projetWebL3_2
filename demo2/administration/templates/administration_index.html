@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <h1>Bienvenue sur le tableau de bord administrateur</h1>
+    <nav>
+        <a href="{% url 'manage_rooms' %}">Gérer les salles</a> |
+        <a href="{% url 'manage_users' %}">Gérer les utilisateurs</a> |
+        <a href="{% url 'manage_reservations' %}">Gérer les réservations</a>
+    </nav>
+    <h2>Résumé</h2>
+    <p>Nombre de salles : {{ rooms.count }}</p>
+    <p>Nombre d'utilisateurs : {{ users.count }}</p>
+    <p>Nombre de réservations : {{ reservations.count }}</p>
+</body>
+</html>
