@@ -15,7 +15,6 @@ from django.http import HttpResponse
 from django.utils.dateparse import parse_date, parse_time
 
 
-from .models import Reservation
 from datetime import timedelta
 
 
