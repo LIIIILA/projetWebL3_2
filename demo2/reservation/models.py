@@ -47,7 +47,9 @@
 # reservation/models.py
 import datetime
 from django.db import models
-from etudiant.models import Etudiant  # Importation explicite pour éviter l'import circulaire
+from etudiant.models import Etudiant  # Importation explicite pour éviter l'import circulaire 
+from datetime import timedelta
+
 
 class Box(models.Model):
     nom = models.CharField(max_length=100)  # Nom ou numéro de la box
@@ -63,7 +65,7 @@ class Reservation(models.Model):
     box = models.ForeignKey(Box, on_delete=models.CASCADE, related_name="reservations")           # Box réservée
     start_time = models.TimeField()  # Heure de début
     end_time = models.TimeField()    # Heure de fin    
-    date = models.DateField(default=datetime.date.today)
+
 
     def __str__(self):
         return f"Reservation: {self.id_etudiant} - Box: {self.box.nom} du {self.date} de {self.start_time} à {self.end_time}"
@@ -90,3 +92,26 @@ class BoxReservation(models.Model):
 
     def __str__(self):
         return f"Réservation de {self.user} - {self.date} de {self.start_time} à {self.end_time}"
+
+
+class Box(models.Model):
+    nom = models.CharField(max_length=100)  
+    capacity = models.IntegerField()         
+    site = models.ForeignKey('Site', on_delete=models.CASCADE)  
+    opening_time = models.TimeField(default="08:45")  
+    closing_time = models.TimeField(default="18:45")      
+    def _str_(self):
+        return self.nom
+
+
+
+class Reservation(models.Model):
+    id_etudiant = models.ForeignKey('etudiant.Etudiant', on_delete=models.CASCADE)  # Utilisateur qui réserve
+    box = models.ForeignKey('Box', on_delete=models.CASCADE,related_name="reservations")           # Box réservée
+    start_time = models.TimeField()  # Heure de début
+    end_time = models.TimeField()    # Heure de fin    
+    date = models.DateField(default=datetime.date.today)
+    def _str_(self):
+        return f"Reservation: {self.id_etudiant} - Box: {self.box.nom}  du {self.date} de {self.start_time} à {self.end_time}"
+    
+    

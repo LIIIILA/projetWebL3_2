@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Liste des réservations</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Étudiant</th>
+            <th>Box</th>
+            <th>Date</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reservation in reservations %}
+        <tr>
+            <td>{{ reservation.etudiant.username }}</td>
+            <td>{{ reservation.box.nom }}</td>
+            <td>{{ reservation.date }}</td>
+            <td>{{ reservation.created_at }}</td>
+            <td>
+                <a href="{% url 'update_reservation' reservation.id %}">Modifier</a>
+                <a href="{% url 'delete_reservation' reservation.id %}">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'create_reservation_admin' %}">Créer une nouvelle réservation</a>
+{% endblock %}

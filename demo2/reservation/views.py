@@ -1,11 +1,12 @@
-
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from .models import Box, Reservation, Site
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login
-from .forms import BoxReservationForm
+from .models import Etudiant
+from icalendar import Calendar, Event
+from django.core.mail import EmailMessage
+from io import BytesIO
+
 
 def genration_horaires():
     hours = []
@@ -36,7 +37,25 @@ def validation_datetime(date, start_time, end_time):
 def get_sites():
     return Site.objects.all()
 
+def get_details_reservation(session):
+    details_reservation = session.get('details_reservation')
+    if not details_reservation:
+        return None  
 
+    box_id = details_reservation['box_id']
+    selected_hour = details_reservation['selected_hour']
+    date = details_reservation['date']
+
+    box = get_object_or_404(Box, id=box_id) 
+    start_time = datetime.strptime(selected_hour, '%H:%M')
+    end_time = start_time + timedelta(minutes=15)
+
+    return {
+        'box': box,
+        'date': date,
+        'start_time': start_time,
+        'end_time': end_time,
+    }
 
 def reservation_index(request):
     # Générer les horaires possibles
@@ -74,7 +93,13 @@ def reservation_index(request):
     })
 
 
-def disponibilite_boxes(request, site_id, date, start_time, end_time):
+def disponibilite_boxes(request, site_id=None, date=None, start_time=None, end_time=None):
+    site_id = site_id or 1  
+    today = datetime.now()
+    date = date or today.strftime("%d-%m-%Y")
+    start_time = start_time or "08:30"
+    end_time = end_time or "18:45"
+    
     hours = genration_horaires()
     sites = get_sites()
 
@@ -138,16 +163,15 @@ def disponibilite_boxes(request, site_id, date, start_time, end_time):
                 
                 # Vérifier si ce créneau est réservé pour cette box
                 for reservation in overlapping_reservations:
-                    #if reservation[0] == box.id and reservation[1] == start_datetime.time() and reservation[2] == end_datetime.time():
                     if reservation[0] == box.id and reservation[1] <= datetime.strptime(hour, "%H:%M").time() < reservation[2]:
                         is_reserved = True
                         break
-                #hour': reservation.start_time avt : hour': start_time
+               
                 disponibilites_crenaux.append({'hour': hour, 'is_reserved': is_reserved})
         
         disponibilites.append({'box': box, 'disponibilites_crenaux': disponibilites_crenaux})
 
-    #print(f"Available boxes: {available_boxes}")  # Log pour vérifier les boxes disponibles
+    #print(f"Available boxes: {available_boxes}")
 
     
     return render(request, 'reservation/disponibilite_boxes.html', {
@@ -161,124 +185,124 @@ def disponibilite_boxes(request, site_id, date, start_time, end_time):
         'sites': sites
     })
 
-
-
-
 def verification(request):
     if request.method == 'POST':
         box_id = request.POST.get('box_id')
         selected_hour = request.POST.get('selected_hour')
         date = request.POST.get('date')
         print(f"Date: {date}, Box ID: {box_id}, Selected Hour: {selected_hour}") 
-
-        if not request.user.is_authenticated:
-            request.session['reservation_data'] = {
+        
+        request.session['details_reservation'] = {
                 'box_id': box_id,
                 'selected_hour': selected_hour,
                 'date': date,
             }
-            return redirect('identification')
-        else:
-            box = Box.objects.get(id=box_id)      
-            start_time = datetime.strptime(selected_hour, '%H:%M')
-            end_time = start_time + timedelta(minutes=15)
 
+        if not request.user.is_authenticated:
+            return redirect("/etudiant/login/?next=/etudiant/reservation/verification/")
+
+        try:
+            etudiant = Etudiant.objects.get(id_etudiant=request.user.etudiant) 
+        except Etudiant.DoesNotExist:
+            return redirect(f"/etudiant/login/?next=/etudiant/reservation/verification/")
+
+        details_reservation = get_details_reservation(request.session)
+        
         return render(request, 'reservation/verification.html', {
             'message': 'Veuillez valider la réservation.',
-            'box':box,
-            'date':date,
-            'start_time': start_time,
-            'end_time': end_time,
+            'box':details_reservation['box'],
+            'date':details_reservation['date'],
+            'start_time': details_reservation['start_time'],
+            'end_time': details_reservation['end_time'],
             })
     
-    
 
-def identification(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)  # Formulaire avec les données soumises
-        if form.is_valid():
-            user = form.get_user()  # Récupère l'utilisateur validé
-            login(request, user)  # Connecte l'utilisateur
 
-            
-            reservation_data = request.session.get('reservation_data')
-            if reservation_data:
-                return redirect('validation')
-
-            return redirect('index_reservation')  # Sinon, redirige vers la page d'accueil
-    else:
-        form = AuthenticationForm()
-
-    return render(request, 'reservation/login.html', {'form': form})
-
+@login_required
 def validation(request):
-    # Vérifie si les données de réservation existent dans la session
-    reservation_data = request.session.get('reservation_data')
+    etudiant = get_object_or_404(Etudiant, id_etudiant=request.user.id_etudiant)
 
-    # Si l'utilisateur est déjà connecté, les données doivent être récupérées même sans la session
-    if not reservation_data and request.user.is_authenticated:
-        # Si l'utilisateur est authentifié et qu'il n'y a pas de données dans la session, on récupère les données du formulaire (par exemple via un POST)
-        box_id = request.POST.get('box_id')
-        selected_hour = request.POST.get('selected_hour')
-        date = request.POST.get('date')
-
-        reservation_data = {
-            'box_id': box_id,
-            'selected_hour': selected_hour,
-            'date': date
-        }
-
-    if not reservation_data:
+    details_reservation = get_details_reservation(request.session)
+    if not details_reservation:
         return redirect('reservation_index')  # Redirige si aucune donnée n'est trouvée
-
-    # Récupère les données de la réservation
-    box_id = reservation_data['box_id']
-    selected_hour = reservation_data['selected_hour']
-    date = reservation_data['date']
-
-    print(f"Réservation confirmée : Box ID: {box_id}, Hour: {selected_hour}, Date: {date}")
     
-    # Récupère les détails de la réservation
-    box = Box.objects.get(id=box_id)
-    start_time = datetime.strptime(selected_hour, '%H:%M')
-    end_time = start_time + timedelta(minutes=15)
-
-    # Sauvegarde de la réservation dans la base de données
     reservation = Reservation(
-            box=box,
-            id_etudiant=request.user,
-            date=date,
-            start_time=start_time,
-            end_time=end_time
+        box=details_reservation['box'],
+        id_etudiant=request.user,
+        date=details_reservation['date'],
+        start_time=details_reservation['start_time'],
+        end_time=details_reservation['end_time']
         )
+
     reservation.save()
+    mail_confirmation(reservation)
+    print(f"Réservation confirmée : Box ID: {reservation.box}, Hour: {reservation.start_time}-{reservation.end_time}, Date: {reservation.date}")
 
     # Supprimez les données de la session après validation
-    if 'reservation_data' in request.session:
-        del request.session['reservation_data']
+    if 'details_reservation' in request.session:
+        del request.session['details_reservation']
 
     return render(request, 'reservation/validation.html', {
-        'message': 'Réservation confirmée !',
-        'box': box,
-        'date': date,
-        'start_time': start_time,
-        'end_time': end_time,
+        'reservation' : reservation
     })
 
 
-def home(request):
-    if request.method == 'POST':
-        form = BoxReservationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('success')  # Redirection après la réservation
-    else:
-        form = BoxReservationForm()
-    return render(request, 'home.html', {'form': form})
 
 
 
+def mail_confirmation(reservation):
+    cal = Calendar()
+    event = Event()
+    event.add('summary', f"Réservation Box {reservation.box.nom}")
+    event.add('dtstart', reservation.start_time)
+    event.add('dtend', reservation.end_time)
+    event.add('dtstamp', reservation.start_time)
+    event.add('location', f"{reservation.box.site.nom}")
+    event.add('description', f"""
+    Réservation confirmée :
+    - Box : {reservation.box.nom}
+    - Site : {reservation.box.site.nom}
+    - Date : {reservation.date}
+    - Heure de début : {reservation.start_time.strftime('%H:%M')}
+    - Heure de fin : {reservation.end_time.strftime('%H:%M')}
+    """)
 
+    cal.add_component(event)
 
+    # Écrit le fichier .ics en mémoire
+    ics_file = BytesIO()
+    ics_file.write(cal.to_ical())
+    ics_file.seek(0)  # Repositionne le curseur au début du fichier
 
+    # Prépare l'email
+    subject = f"Confirmation de votre réservation - Box {reservation.box.nom}"
+    message = f"""
+    Bonjour {reservation.id_etudiant.email},
 
+    Nous vous confirmons que votre réservation pour la Box {reservation.box.nom} a été validée.
+    Détails de la réservation :
+    - Box : {reservation.box.nom}
+    - Site : {reservation.box.site.nom}
+    - Date : {reservation.date}
+    - Durée : {reservation.end_time - reservation.start_time} minutes
+
+    Vous trouverez ci-joint un fichier pour ajouter cette réservation directement à votre calendrier.
+
+    Merci de votre confiance !
+    Cordialement,
+    L'équipe de réservation
+    """
+    email = EmailMessage(
+        subject=subject,
+        body=message,
+        from_email='hongreve@gmail.com',
+        to=[reservation.id_etudiant.email],
+    )
+
+    email.attach(f"reservation_{reservation.id}.ics", ics_file.read(), 'text/calendar')
+    email.send()
+
+def annuler_reservation(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    reservation.delete()
+    return redirect('confirmation_annulation')

@@ -1,9 +1,14 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import Reservation, TimeSlot
 
-class CustomUserAdmin(UserAdmin):
-    model = CustomUser
-    list_display = ['username', 'email', 'is_student', 'is_admin']
+@admin.register(Reservation)
+class ReservationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'room', 'start_time', 'end_time', 'created_at', 'updated_at')
+    list_filter = ('room', 'start_time', 'end_time')
+    search_fields = ('user__username', 'room')
 
-admin.site.register(CustomUser, CustomUserAdmin)
+@admin.register(TimeSlot)
+class TimeSlotAdmin(admin.ModelAdmin):
+    list_display = ('room', 'start_time', 'end_time', 'is_blocked')
+    list_filter = ('room', 'is_blocked')
+    search_fields = ('room',)

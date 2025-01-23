@@ -379,5 +379,5 @@ ul li::before {
 .bande_rouge {
     width: 100%;          /* La largeur occupe toute la largeur de l'écran */
     height: 50px;         /* La hauteur de la bande (vous pouvez ajuster cette valeur) */
-    background-color: red; /* La couleur de la bande */
-  }
+    background-color: red; /* La couleur de la bande */
+  }

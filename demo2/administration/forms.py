@@ -1,12 +1,23 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser
+from django import forms
+from .models import Reservation, TimeSlot
+from .models import Reservation
+from django.contrib.auth import get_user_model
 
-class CustomUserCreationForm(UserCreationForm):
-    class Meta:
-        model = CustomUser
-        fields = ('username', 'email', 'phone_number', 'is_student', 'is_admin')
 
-class CustomUserChangeForm(UserChangeForm):
+class ReservationForm(forms.ModelForm):
     class Meta:
-        model = CustomUser
-        fields = ('username', 'email', 'phone_number', 'is_student', 'is_admin')
+        model = Reservation
+        fields = ['user', 'room', 'start_time', 'end_time']
+
+class TimeSlotForm(forms.ModelForm):
+    class Meta:
+        model = TimeSlot
+        fields = ['room', 'start_time', 'end_time', 'is_blocked']
+
+class AdminReservationForm(forms.ModelForm):
+    etudiant = forms.ModelChoiceField(queryset=get_user_model().objects.all(), label="Étudiant")  # Sélection d'un étudiant
+
+
+    class Meta:
+        model = Reservation
+        fields = ['etudiant', 'box', 'date', 'time_slot']        
