@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Réservations BU</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{% static 'reservation/admin.css' %}">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="{% url 'reservation_index' %}" class="brand-logo">
+                <img src="{% static 'reservation/logo.png' %}" alt="Logo" class="logo">
+                | Administration
+            </a>
+            <a href="{% url 'logout' %}" class="btn-nav">Déconnexion</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Interface Administrateur</h1>
+
+        <h2>Liste des Réservations</h2>
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Salle</th>
+                    <th>Étudiant</th>
+                    <th>Date</th>
+                    <th>Heure de début</th>
+                    <th>Heure de fin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.salle.nom }}</td>
+                    <td>{{ reservation.etudiant.nom }}</td>
+                    <td>{{ reservation.date }}</td>
+                    <td>{{ reservation.heure_debut }}</td>
+                    <td>{{ reservation.heure_fin }}</td>
+                    <td>
+                        <a href="{% url 'modifier_reservation' reservation.id %}" class="btn blue">Modifier</a>
+                        <a href="{% url 'annuler_reservation' reservation.id %}" class="btn red">Annuler</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Historique des Réservations</h2>
+        <form method="post" action="{% url 'historique_reservations' %}">
+            {% csrf_token %}
+            <div class="input-field">
+                <select name="salle_id" required>
+                    <option value="" disabled selected>Choisissez une salle</option>
+                    {% for salle in salles %}
+                        <option value="{{ salle.id }}">{{ salle.nom }}</option>
+                    {% endfor %}
+                </select>
+                <label>Sélectionnez une salle</label>
+            </div>
+            <button type="submit" class="btn waves-effect waves-light">Voir l’historique</button>
+        </form>
+
+        {% if historique %}
+        <h3>Historique pour {{ salle_selectionnee.nom }}</h3>
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Heure de début</th>
+                    <th>Heure de fin</th>
+                    <th>Étudiant</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in historique %}
+                <tr>
+                    <td>{{ reservation.date }}</td>
+                    <td>{{ reservation.heure_debut }}</td>
+                    <td>{{ reservation.heure_fin }}</td>
+                    <td>{{ reservation.etudiant.nom }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+        });
+    </script>
+</body>
+</html>

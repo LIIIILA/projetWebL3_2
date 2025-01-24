@@ -19,8 +19,8 @@ class Box(models.Model):
 
 
 class Reservation(models.Model):
-    id_etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)  # Utilisateur qui réserve
-    box = models.ForeignKey(Box, on_delete=models.CASCADE,related_name="reservations")           # Box réservée
+    id_etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE, related_name="reservation_reservations")
+    box = models.ForeignKey(Box, on_delete=models.CASCADE, related_name="reservation_reservations")
     start_time = models.TimeField()  # Heure de début
     end_time = models.TimeField()    # Heure de fin    
     date = models.DateField(default=datetime.date.today)
