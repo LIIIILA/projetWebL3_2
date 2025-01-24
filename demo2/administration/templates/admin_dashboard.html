@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord</title>
 </head>
 <body>
-    <h1>Bienvenue au tableau de bord administrateur</h1>
+    <h1>Bienvenue, {{ user.email }}</h1>
+    <a href="{% url 'logout' %}">Déconnexion</a>
 </body>
 </html>

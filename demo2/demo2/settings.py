@@ -146,8 +146,7 @@ DEFAULT_FROM_EMAIL = 'ton.email@gmail.com'  # Email par défaut pour l'expédite
 
 LOGOUT_REDIRECT_URL = '/'  # URL vers laquelle rediriger après déconnexion (optionnel)
 
-AUTH_USER_MODEL = 'etudiant.Etudiant'
-
+AUTH_USER_MODEL = 'administration.Administrateur'
 
 
 

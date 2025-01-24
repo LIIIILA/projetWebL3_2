@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from .views import AdminLoginView
+from .views import admin_dashboard
+
 
 urlpatterns = [
     path('', views.administration_index, name='administration_index'),  # Page d'accueil
@@ -24,5 +27,13 @@ urlpatterns = [
 
 
     path('admin/reservations/create/', views.create_reservation_admin, name='create_reservation_admin'),
+
+    path('login/', views.admin_login, name='admin_login'),
+
+
+    path('dashboard/', admin_dashboard, name='admin_dashboard'),
+
+    path('logout/', views.admin_logout, name='admin_logout'),
+
 ]
 

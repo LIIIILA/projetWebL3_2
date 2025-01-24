@@ -1,24 +1,19 @@
-<h1>Gestion des Salles</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Capacité</th>
-            <th>Site</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for room in rooms %}
-            <tr>
-                <td>{{ room.nom }}</td>
-                <td>{{ room.capacity }}</td>
-                <td>{{ room.site.nom }}</td>
-                <td>
-                    <a href="{% url 'update_room' room.id %}">Modifier</a> |
-                    <a href="{% url 'delete_room' room.id %}">Supprimer</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Administrateur</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <h1>Connexion Administrateur</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+</body>
+</html>

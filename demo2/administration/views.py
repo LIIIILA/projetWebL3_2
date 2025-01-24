@@ -6,8 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .models import Box, Reservation
 from django.contrib.auth.models import User
-
-
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth import logout
 
 
 
@@ -140,7 +143,7 @@ def block_timeslot(request, timeslot_id):
     return redirect('timeslot_list')
 
 def admin_dashboard(request):
-    return render(request, 'administration/admin_dashboard.html')
+    return render(request, 'admin/dashboard.html', {'user': request.user})
 
 def manage_rooms(request):
     # Logique de gestion des salles
@@ -188,3 +191,33 @@ def create_reservation_admin(request):
 def reservation_list(request):
     reservations = Reservation.objects.all()  # Liste de toutes les réservations
     return render(request, 'admin/reservation_list.html', {'reservations': reservations})
+
+
+class AdminLoginView(LoginView):
+    template_name = 'administration/login.html'  # Fichier HTML de la page de connexion
+    success_url = reverse_lazy('admin_dashboard')  # Page de redirection après connexion
+
+    def get_success_url(self):
+        return self.success_url
+    
+def admin_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('admin_dashboard')  # Redirige vers le tableau de bord
+        else:
+            messages.error(request, "Email ou mot de passe incorrect.")
+
+    return render(request, 'admin/login_admin.html')    
+
+
+def admin_logout(request):
+    logout(request)
+    return redirect('admin_login')  # Redirige vers la page de connexion
+
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
