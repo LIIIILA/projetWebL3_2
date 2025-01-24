@@ -91,19 +91,29 @@ button:hover {
 
 .criteria-box h3 {
     color: #b71c1c; /* Titre marron foncé */
-    margin-bottom: 15px; /* Espacement sous le titre */
+    font-size: 1.5rem; /* Taille du titre */
+    margin-bottom: 10px;
 }
 .criteria-box ul {
     padding-left: 20px; /* Indentation des listes */
+    list-style-type: disc; /* Style de liste avec puces */
+    margin-left: 20px; /* Décalage pour les puces */
+    line-height: 1.6; /* Améliore l'espacement entre les lignes */
 }
 .criteria-box li {
     margin-bottom: 10px; /* Espacement entre les éléments de liste */
 }
 
+.criteria-box p {
+    margin-top: 15px; /* Espace entre la liste et le texte */
+    font-size: 0.9rem;
+    color: #666;
+}
+
 .criteria-image {
-    flex: 1; /* Prend tout l’espace disponible à droite */
-    max-width: 600px; /* Limite la largeur de l’image */
-    border-radius: 10px; /* Coins arrondis */
+    max-width: 60%; /* Limite la taille de l'image */
+    height: auto; /* Garde les proportions */
+    border-radius: 10px; /* Optionnel : ajoute des coins arrondis */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
 }
 
@@ -139,6 +149,31 @@ button:hover {
     cursor: pointer;
     transition: transform 0.3s ease, background-color 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Légère ombre */
+    padding: 6px;
+    font-size: 12px;
+    width: 32px; 
+    height: 32px; 
+    border-radius: 50%;
+    margin-top: 10px; /* Ajoute un espace vers le haut */
+    margin-bottom: 10px; /* Ajoute un espace vers le bas */
+}
+
+.sidebar .university-link {
+    color: white; /* Couleur du texte pour correspondre au design */
+    text-decoration: none; /* Pas de soulignement pour le lien */
+    font-size: 16px; /* Taille légèrement plus grande pour le texte */
+    margin-right: 15px; /* Espacement entre le lien et le premier bouton */
+    padding: 10px; /* Ajout d'espace interne pour rendre le clic plus confortable */
+    font-weight: bold; /* Texte en gras */
+}
+
+.sidebar .btn-ent waves-effect waves-light {
+    text-decoration: underline; /* Facultatif : souligne le texte au survol */
+}
+
+#site {
+    float: left; /* Permet de placer à gauche */
+    margin-left: 0; /* Ajuste l'espacement */
 }
 
 /* Icônes dans les boutons */
@@ -148,7 +183,7 @@ button:hover {
 
 /* Effets au survol */
 .btn-sidebar:hover {
-    transform: scale(1.1); /* Grossissement léger */
+    transform: all 0.5s ease-in-out; /* Grossissement léger */
     background-color: #f5f5f5; /* Fond blanc survolé */
     color: #b71c1c; /* Icône rouge foncé survolée */
 }
@@ -165,7 +200,7 @@ button:hover {
     align-items: center; /* Aligne verticalement les éléments */
     justify-content: space-between; /* Assure un espace entre le logo et le texte */
     padding: 10px 20px;
-    background-color: #f5f5f5; /* Fond rouge */
+    background-color: #ffffff; /* Fond rouge */
     color: #b71c1c;
     position: relative; /* Permet un meilleur contrôle de positionnement */
 }
@@ -376,8 +411,55 @@ ul li::before {
     transform: translateY(-50%); /* Centre la flèche verticalement */
 }
 
-.bande_rouge {
-    width: 100%;          /* La largeur occupe toute la largeur de l'écran */
-    height: 50px;         /* La hauteur de la bande (vous pouvez ajuster cette valeur) */
-    background-color: red; /* La couleur de la bande */
-  }
+/* Transition pour les sections */
+.section {
+    opacity: 0; /* Rendre invisible au départ */
+    transform: translateY(20px); /* Décalage vers le bas */
+    transition: opacity 0.8s ease, transform 0.8s ease; /* Transition fluide */
+}
+
+.section.visible {
+    opacity: 1; /* Rendre visible */
+    transform: translateY(0); /* Annuler le décalage */
+}
+
+.introduction-text {
+    text-align: center; /* Centre le texte horizontalement */
+    max-width: 800px; /* Limite la largeur pour une meilleure lisibilité */
+    margin: 0 auto; /* Centre le conteneur horizontalement */
+    line-height: 1.8; /* Ajoute de l'espace entre les lignes */
+    font-size: 1.2rem; /* Taille de texte confortable */
+    color: #333; /* Couleur sombre pour un contraste agréable */
+    font-weight: 400; /* Poids régulier pour une apparence professionnelle */
+    padding: 20px; /* Ajoute un peu de marge intérieure */
+}
+
+#introduction-boxes, #faq {
+    background-color: rgba(255, 99, 71, 0.1); /* Rouge très clair avec transparence */
+    padding: 20px; /* Espacement interne conservé */
+    border-radius: 8px; /* Coins légèrement arrondis pour un style moderne */
+    transition: background-color 0.3s ease; 
+}
+
+/* Optionnel : Effet au survol */
+#introduction-boxes:hover, #faq:hover {
+    background: linear-gradient(
+    to bottom,
+    rgba(255, 99, 71, 0.1),
+    rgba(255, 99, 71, 0)
+);
+
+}
+
+.faq-item{
+    background-color: #ffffff; /* Blanc pur */
+    border: 1px solid #ddd; /* Optionnel : une bordure grise légère pour les démarquer */
+    border-radius: 8px; /* Coins arrondis pour un style moderne */
+    padding: 20px; /* Espacement interne */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optionnel : une ombre légère pour donner du relief */
+}
+
+header {
+    background-color: #ffffff;
+}
+
