@@ -11,6 +11,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db import models
 
 
 
@@ -167,6 +169,44 @@ def create_user(request):
     return render(request, 'admin/create_user.html', {'form': form})
 
 
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('L\'adresse email doit être fournie')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser doit avoir is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser doit avoir is_superuser=True.')
+
+        return self.create_user(email, password, **extra_fields)
+
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+
+    def __str__(self):
+        return self.email
+
+
 
 @login_required
 def manage_rooms(request):
@@ -193,6 +233,17 @@ def reservation_list(request):
     return render(request, 'admin/reservation_list.html', {'reservations': reservations})
 
 
+def create_superuser(self, email, password=None, **extra_fields):
+    extra_fields.setdefault('is_staff', True)
+    extra_fields.setdefault('is_superuser', True)
+
+    if extra_fields.get('is_staff') is not True:
+        raise ValueError('Superuser doit avoir is_staff=True.')
+    if extra_fields.get('is_superuser') is not True:
+        raise ValueError('Superuser doit avoir is_superuser=True.')
+
+    return self.create_user(email, password, **extra_fields)
+
 class AdminLoginView(LoginView):
     template_name = 'administration/login.html'  # Fichier HTML de la page de connexion
     success_url = reverse_lazy('admin_dashboard')  # Page de redirection après connexion
@@ -202,17 +253,15 @@ class AdminLoginView(LoginView):
     
 def admin_login(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, email=email, password=password)
-
-        if user is not None:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_staff:  # Vérifie que l'utilisateur est un administrateur
             login(request, user)
-            return redirect('admin_dashboard')  # Redirige vers le tableau de bord
+            return redirect('admin_dashboard')  # Remplace 'admin_dashboard' par ta vue
         else:
-            messages.error(request, "Email ou mot de passe incorrect.")
-
-    return render(request, 'admin/login_admin.html')    
+            messages.error(request, 'Identifiants invalides ou droits insuffisants.')
+    return render(request, 'admin/login_admin.html')
 
 
 def admin_logout(request):

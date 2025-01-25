@@ -1,31 +1,28 @@
+
 {% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/admin_login.css' %}">
     <title>Connexion Administrateur</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <h1>Connexion Administrateur</h1>
-    <form method="POST" action="{% url 'admin_login' %}">
+    <form method="POST">
         {% csrf_token %}
-        <label for="email">Email :</label>
-        <input type="email" name="email" id="email" required>
-        <br>
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" name="username" required>
+        
         <label for="password">Mot de passe :</label>
-        <input type="password" name="password" id="password" required>
-        <br>
+        <input type="password" id="password" name="password" required>
+        
         <button type="submit">Se connecter</button>
     </form>
-
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li style="color: red;">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    {% for message in messages %}
+        <p style="color: red;">{{ message }}</p>
+    {% endfor %}
 </body>
 </html>
