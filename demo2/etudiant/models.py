@@ -5,6 +5,8 @@ from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.apps import AppConfig
+from django.contrib.auth.models import User
+
 
 
 

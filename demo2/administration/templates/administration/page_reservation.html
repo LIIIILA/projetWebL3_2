@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque Universitaire de Paris Nanterre</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> 
+    <link rel="stylesheet" href="{% static 'reservation/index.css' %}"> 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=keyboard_arrow_down" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialisation des éléments select avec Materialize
+        var elems = document.querySelectorAll('select');
+        M.FormSelect.init(elems);
+    });
+</script>
+
+<body>
+
+
+    <div class="container">
+        <h1>BIBLIOTHÈQUE UNIVERSITAIRE DE PARIS NANTERRE</h1>
+        <h2>Réserver une salle de travail</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="select-container">
+                <select name="site_id" required class="transparent-select">
+                    {% for site in sites %}
+                        <option value="{{ site.id }}">{{ site.nom }}</option>
+                    {% endfor %}
+                </select>
+                <span class="material-symbols-outlined">keyboard_arrow_down</span>
+            </div>
+
+            <div class="select-container">
+                <input id="reservation-date" type="text" name="date" placeholder="Choisir une date" required>
+            </div>
+            
+            <div class="select-container">
+                <select name="start_time" id="start_time" class="transparent-select">
+                    <option value="" disabled selected>Heure de début</option>
+                    {% for hour in hours %}
+                        <option value="{{ hour }}">{{ hour }}</option>
+                    {% endfor %}
+                    
+                </select>
+                <span class="material-symbols-outlined">keyboard_arrow_down</span>
+            </div>
+
+            <div class="select-container">
+                <select name="end_time" id="end_time" class="transparent-select">
+                    <option value="" disabled selected>Heure de fin</option>
+                    {% for hour in hours %}
+                        <option value="{{ hour }}">{{ hour }}</option>
+                    {% endfor %}
+                </select>
+            <span class="material-symbols-outlined">keyboard_arrow_down</span>
+            </div>
+
+            
+            <button class="btn waves-effect waves-light red darken-3" type="submit">
+                Réserver
+                <i class="material-icons right">send</i>
+            </button>
+            
+        </form>
+
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{% static 'reservation/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration Réservations</title>
+    <!-- Inclusion de Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .hours-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .hour-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .hour-btn.available {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .hour-btn.disabled {
+            background-color: #e0e0e0;
+            color: #9e9e9e;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="red-text text-darken-3 center-align">Boxes disponibles le {{ date }}</h2>
+
+        <!-- Section des filtres -->
+        <div class="card-panel">
+            <form method="post" class="row" action="{% url 'reservation_admin' %}">
+                {% csrf_token %}
+                <!-- Filtre par site -->
+                <div class="input-field col s12 m6">
+                    <select name="site_id" id="site" class="browser-default" required>
+                        <option value="" disabled selected>Filtrer par site</option>
+                        {% for site in sites %}
+                            <option value="{{ site.id }}">{{ site.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Date -->
+                <div class="input-field col s12 m6">
+                    <input id="reservation-date" type="date" name="date" required value="{{ date }}">
+                    <label for="reservation-date">Date</label>
+                </div>
+
+                <!-- Heure de début -->
+            <div class="input-field col s12 m6">
+                <select name="start_time" id="start_time" class="browser-default" required>
+                    <option value="" disabled selected>Heure de début</option>
+                    {% for value, display in time_choices %}
+                        <option value="{{ value }}">{{ display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Heure de fin -->
+            <div class="input-field col s12 m6">
+                <select name="end_time" id="end_time" class="browser-default" required>
+                    <option value="" disabled selected>Heure de fin</option>
+                    {% for value, display in time_choices %}
+                        <option value="{{ value }}">{{ display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+                <!-- Bouton de recherche -->
+                <div class="col s12 center-align">
+                    <button type="submit" class="btn waves-effect red darken-3">Rechercher</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Section des disponibilités -->
+        <div class="container">
+            {% if boxes %}
+                <div class="row">
+                    {% for box in boxes %}
+                    <div class="col s12 m6 l9">
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">{{ box.name }} ({{ box.site.name }})</span>
+                                <p>{{ box.description }}</p>
+                                <p><i class="material-icons">groups</i> {{ box.capacity }} places</p>
+                                <hr>
+
+                                <!-- Sélection d'heure -->
+                                <div class="hours-container">
+                                    <h6>Choisissez une heure</h6>
+                                    <div class="hours-grid">
+                                        {% for hour in box.available_hours %}
+                                        <button class="hour-btn {% if hour.available %}available{% else %}disabled{% endif %}" {% if not hour.available %}disabled{% endif %}>
+                                            {{ hour.time }}
+                                        </button>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Formulaire de réservation -->
+                            <div class="card-action">
+                                <form method="post" action="{% url 'reservation' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="box_id" value="{{ box.id }}">
+                                    <input type="hidden" name="date" value="{{ date }}">
+                                    <input type="hidden" name="selected_hour" value="">
+
+                                    <button type="submit" class="btn red darken-3 waves-effect waves-light" {% if not box.available %}disabled{% endif %}>
+                                        Réserver
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Message quand aucune disponibilité -->
+                <div class="card-panel amber lighten-4">
+                    <p class="amber-text text-darken-4 center-align">Aucun box disponible pour cette plage horaire.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Bouton retour -->
+        <div class="center-align">
+            <a href="#" class="btn-flat waves-effect">Retour</a>
+        </div>
+    </div>
+
+    <!-- Inclusion de Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

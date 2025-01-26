@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Réservations BU</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{% static 'admin.css' %}?v={{ timestamp }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=keyboard_arrow_down" />
+
+</head>
+
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo-container">
+                <a href="{% url 'reservation_index' %}" class="brand-logo">
+                    <img src="{% static 'reservation/logo.png' %}" alt="Logo" class="logo">
+                    <span class="admin-title">| ADMINISTRATION</span>
+                </a>
+            </div>
+            <div class="navbar-right">
+                <a href="{% url 'logout' %}" class="btn-nav">Déconnexion</a>
+            </div>
+        </div>
+    </header>
+    
+    
+
+    <form method="get" action="{% url 'index_admin' %}" id="filter-form">
+    <div class="filter-bar">
+        <!-- Champ Étudiant -->
+        <div class="input-field">
+            <label for="etudiant_id">Sélectionnez un étudiant</label>
+            <select id="etudiant_id" name="etudiant_id">
+                <option value="" disabled selected>Choisissez un étudiant</option>
+                {% for etudiant in etudiants %}
+                    <option value="{{ etudiant.id }}">{{ id_etudiant }}</option>
+                {% endfor %}
+            </select>
+        </div>
+<!--
+        Champ Box -->
+        <div class="input-field">
+            <!-- <label for="box_id">Sélectionnez une box</label> -->
+            <select id="box_id" name="box_id">
+                <option value="" disabled selected>Choisissez une box</option>
+                {% for box in boxes %}
+                    <option value="{{ box.id }}" {% if box.id == box_id %}selected{% endif %}>{{ box.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        
+    
+        <!-- Champ Date -->
+        <div class="input-field">
+            <label for="filter-date">Date</label>
+            <input type="date" name="date" id="filter-date">
+        </div>
+    
+        <!-- Champ Heure de début -->
+        <div class="input-field">
+            <label for="filter-start-time">Heure de début</label>
+            <input type="time" name="start_time" id="filter-start-time">
+        </div>
+    
+        <!-- Champ Heure de fin -->
+        <div class="input-field">
+            <label for="filter-end-time">Heure de fin</label>
+            <input type="time" name="end_time" id="filter-end-time">
+        </div>
+    
+        <!-- Bouton Appliquer -->
+        <button type="submit">Appliquer les filtres</button>
+    </div>
+</form>
+
+    <!-- Contenu sous la barre de filtre -->
+    <!-- Contenu sous la barre de filtre -->
+<div class="content">
+    <div class="header-container">
+        <h3 class="title">Réservations Futures</h3>
+        <a href="{% url 'reservation_admin' %}" class="btn green">Réserver</a>
+    </div>
+    {% if reservations_futures %}
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Salle</th>
+                    <th>Étudiant</th>
+                    <th>Date</th>
+                    <th>Heure de début</th>
+                    <th>Heure de fin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations_futures %}
+                    <tr>
+                        <td>{{ reservation.box.nom }}</td>
+                        <td>{{ reservation.id_etudiant}}</td>
+                        <td>{{ reservation.date }}</td>
+                        <td>{{ reservation.start_time }}</td>
+                        <td>{{ reservation.end_time }}</td>
+                        <td>
+                            <!-- Conteneur des boutons -->
+                            <div class="button-container">
+                                <a href="{% url 'modifier_reservation' reservation.id %}" class="btn modify-btn">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                <a href="{% url 'annuler_reservation' reservation.id %}" class="btn cancel-btn">
+                                    <i class="fas fa-trash-alt"></i> Annuler
+                                </a>
+                            </div>
+
+                        </td>                                               
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune réservation future.</p>
+    {% endif %}
+</div>
+
+
+<div class="content">
+        {% if reservations_passees %}
+            <h3 class="title">Réservations Passées</h3>
+            <table class="striped">
+                <thead>
+                    <tr>
+                        <th>Salle</th>
+                        <th>Étudiant</th>
+                        <th>Date</th>
+                        <th>Heure de début</th>
+                        <th>Heure de fin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations_passees %}
+                        <tr>
+                            <td>{{ reservation.box }}</td>
+                            <td>{{ reservation.id_etudiant }}</td>
+                            <td>{{ reservation.date }}</td>
+                            <td>{{ reservation.start_time }}</td>
+                            <td>{{ reservation.end_time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- Section Informations -->
+            <div class="footer-section">
+                <h3>📍 Localisation</h3>
+                <p>
+                    Université Paris Nanterre<br>
+                    200 Avenue de la République,<br>
+                    92001 Nanterre, France
+                </p>
+            </div>
+    
+            <!-- Section À propos -->
+            <div class="footer-section">
+                <h3>🕒 À propos de nous</h3>
+                <p><strong>Horaires :</strong> Lundi - Vendredi : 8h30 - 19h00</p>
+                <p><strong>Numéro :</strong> +33 1 23 45 67 89</p>
+            </div>
+    
+            <!-- Section Plan et Site -->
+            <div class="footer-section">
+                <h3>🌐 Liens utiles</h3>
+                <ul>
+                    <li><a href="https://communication.parisnanterre.fr/kit-daccueil/plan-du-campus-bibliotheques-de-luniversite-paris-nanterre"  target="_blank">Plan de l'Université</a></li>
+                    <li><a href="https://www.parisnanterre.fr/" target="_blank">Site officiel</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Bibliothèque Universitaire de Paris Nanterre | Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+            console.log("Materialize select initialized!");
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Réservation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{% static 'modifier.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Modifier la Réservation</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn waves-effect waves-light">Enregistrer</button>
+            <a href="{% url 'reservation_index' %}" class="btn red">Annuler</a>
+        </form>
+    </div>
+</body>
+</html>

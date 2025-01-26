@@ -13,9 +13,10 @@ from django.conf import settings
 from .forms import LoginForm
 from django.http import HttpResponse
 from django.utils.dateparse import parse_date, parse_time
-
-
+from reservation.models import Site, Reservation, Box
+from datetime import datetime
 from datetime import timedelta
+
 
 
 def login(request):
@@ -34,9 +35,9 @@ def generate_verification_code():
     return random.randint(100000, 999999)
 
 def historique(request):
-    reservations = Reservation.objects.filter(user=request.user).order_by('-created_at')
-    salles = Salle.objects.all()  # Assurez-vous de récupérer les salles disponibles si nécessaire
-    return render(request, 'etudiant/historique.html', {'reservations': reservations, 'salles': salles})
+    reservations = reservations.objects.filter(user=request.user).order_by('-created_at')
+    site = site.objects.all()  # Assurez-vous de récupérer les salles disponibles si nécessaire
+    return render(request, 'etudiant/historique.html', {'reservations': reservations, 'salles': Site})
 
 
 # def disponibilites(request):
@@ -59,9 +60,9 @@ def historique(request):
 #     }
 #     return render(request, 'disponibilites.html', context)
 def disponibilites(request):
-    salles = Salle.objects.all()
+    site = Site.objects.all()
     context = {
-        'salles': salles,
+        'salles': site,
     }
     return render(request, 'etudiant/disponibilites.html', context)
 
@@ -93,7 +94,7 @@ def reserver_box(request):
         end_time_str = request.POST.get("end_time")  # Heure de fin
 
         # Validation des données
-        if not salle_id or not box_id or not date_str or not time_str:
+        if not salle_id or not box_id or not date_str or not start_time_str or not end_time_str:
             messages.error(request, "Tous les champs sont obligatoires.")
             return redirect('reserver_box')
 
@@ -112,9 +113,9 @@ def reserver_box(request):
 
         # Trouver la salle et la box correspondantes
         try:
-            salle = Salle.objects.get(id=salle_id)
+            salle = Site.objects.get(id=salle_id) # Remplacer site_id par salle_id
             box = Box.objects.get(id=box_id)
-        except Salle.DoesNotExist or Box.DoesNotExist:
+        except Site.DoesNotExist or Box.DoesNotExist:
             messages.error(request, "Salle ou Box non trouvée.")
             return redirect('reserver_box')
 
@@ -135,7 +136,7 @@ def reserver_box(request):
     # Afficher le formulaire avec les données des salles et des boxes disponibles
     time_slots = generate_time_slots()
 
-    salles = Salle.objects.all()
+    salles = Site.objects.all()
     boxes = Box.objects.all()  # Assurez-vous de filtrer en fonction de la salle sélectionnée si nécessaire
     return render(request, 'etudiant/reserver_box.html', {'salles': salles, 'boxes': boxes})
 

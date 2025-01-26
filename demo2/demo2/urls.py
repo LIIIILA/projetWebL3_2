@@ -5,7 +5,7 @@ from etudiant import views
 urlpatterns = [
     path('', include('reservation.urls')),  # Page d'accueil redirigée vers l'application "reservation"
     path('admin/', admin.site.urls), 
-    path('reservation/', include('reservation.urls')),
+    path('reservation/', include(('reservation.urls', 'reservation'), namespace='reservation')),
     path('etudiant/', include('etudiant.urls')),  # Application 'etudiant' incluse
     path('administration/', include('administration.urls')),
     
