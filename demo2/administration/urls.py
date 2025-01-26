@@ -1,3 +1,9 @@
+# from django.urls import path
+# from . import views
+
+# urlpatterns = [
+#     path('', views.administration_index, name='administration_index'),# Page d'accueil de l'application étudiant
+# ]
 from django.urls import path
 from . import views
 from .views import AdminLoginView
@@ -34,6 +40,10 @@ urlpatterns = [
     path('dashboard/', admin_dashboard, name='admin_dashboard'),
 
     path('logout/', views.admin_logout, name='admin_logout'),
+
+    path('admin/', views.admin_dashboard, name='admin_dashboard'),
+    path('modifier/<int:reservation_id>/', views.modifier_reservation, name='modifier_reservation'),
+
 
 ]
 

@@ -1,18 +1,29 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractUser
-from django.conf import settings
-from django.utils.timezone import now
-
-from datetime import datetime
-datetime(2025, 1, 23, 10, 30)
-
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
 
-field_name = models.DateTimeField(default=timezone.now)
+from django.core.management.base import BaseCommand
 
 
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
+class Command(BaseCommand):
+    help = "Met à jour l'admin par défaut"
+
+    def handle(self, *args, **kwargs):
+        email = 'lola@exemple.com'
+        username = 'lola'
+        password = 'lola123'
+
+        admin_user, created = Administrateur.objects.get_or_create(email=email)
+        admin_user.username = username
+        admin_user.set_password(password)
+        admin_user.save()
+
+        if created:
+            self.stdout.write(self.style.SUCCESS(f"Nouvel admin créé : {username}"))
+        else:
+            self.stdout.write(self.style.SUCCESS(f"Admin existant mis à jour : {username}"))
+
+
 
 class Room(models.Model):
     name = models.CharField(max_length=100)
@@ -27,9 +38,7 @@ class TimeSlot(models.Model):
     end_time = models.DateTimeField()
     is_blocked = models.BooleanField(default=False)
 
-
 class Box(models.Model):
-    
     nom = models.CharField(max_length=100)
     capacity = models.IntegerField()
     site = models.ForeignKey('Site', on_delete=models.CASCADE)
@@ -46,21 +55,19 @@ class Reservation(models.Model):
     etudiant = models.ForeignKey('etudiant.Etudiant', on_delete=models.CASCADE, related_name='admin_reservations')  # Modifie le related_name
     box = models.ForeignKey('Box', on_delete=models.CASCADE, null=True, blank=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    user = user = models.ForeignKey('administration.Administrateur', on_delete=models.CASCADE)
+    user = models.ForeignKey('administration.Administrateur', on_delete=models.CASCADE)
 
     date = models.DateField()
     time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    start_time = models.TimeField()  
-    end_time = models.DateTimeField(default=now)
+    start_time = models.DateTimeField()  # Change TimeField à DateTimeField pour uniformité
+    end_time = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)  # Champ pour la date de création
     updated_at = models.DateTimeField(auto_now=True)  
 
     def __str__(self):
         return f"Reservation by {self.user.username} for {self.room.name} on {self.date}"
 
-
-    
 class Site(models.Model):
     nom = models.CharField(max_length=100)
 
@@ -82,13 +89,12 @@ class AdministrateurManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
 
-
 class Administrateur(AbstractUser):
     email = models.EmailField(unique=True)  # Utilise l'email comme identifiant
-    username = None  # On supprime le champ username par défaut
+    username = models.CharField(max_length=100, unique=True, default="default_username")
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     objects = AdministrateurManager()
 
@@ -108,4 +114,3 @@ class Administrateur(AbstractUser):
     class Meta:
         verbose_name = "Administrateur"
         verbose_name_plural = "Administrateurs"
-

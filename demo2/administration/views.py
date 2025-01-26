@@ -13,6 +13,8 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 
 
 
@@ -32,7 +34,7 @@ def create_reservation(request):
     return render(request, 'admin/create_reservation.html', {'form': form})
 
 @login_required
-def update_reservation(request, reservation_id):
+def modifier_reservation(request, reservation_id):
     reservation = Reservation.objects.get(id=reservation_id)
     if request.method == "POST":
         form = ReservationForm(request.POST, instance=reservation)
@@ -41,7 +43,7 @@ def update_reservation(request, reservation_id):
             return redirect('reservation_list')
     else:
         form = ReservationForm(instance=reservation)
-    return render(request, 'admin/update_reservation.html', {'form': form})
+    return render(request, 'admin/manage_rooms.html', {'form': form})
 
 @login_required
 def delete_reservation(request, reservation_id):
@@ -200,6 +202,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customuser_groups',  # Ajout du related_name
+        blank=True
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='customuser_permissions',  # Ajout du related_name
+        blank=True
+    )
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
@@ -270,3 +283,22 @@ def admin_logout(request):
 
 def is_admin(user):
     return user.is_authenticated and user.is_staff
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('admin:index')  # Redirige vers l'admin
+            else:
+                # Mauvais identifiants
+                return render(request, 'login.html', {'form': form, 'error': 'Identifiants invalides'})
+        else:
+            return render(request, 'login.html', {'form': form, 'error': 'Formulaire invalide'})
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
