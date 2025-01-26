@@ -1,5 +1,3 @@
-
-
 from django.shortcuts import render, get_object_or_404
 from .forms import ReservationForm
 
@@ -13,8 +11,13 @@ from django.conf import settings
 from .forms import LoginForm
 from django.http import HttpResponse
 from django.utils.dateparse import parse_date, parse_time
+<<<<<<< HEAD
 from reservation.models import Site, Reservation, Box
 from datetime import datetime
+=======
+
+from reservation.models import Reservation, Site, Box
+>>>>>>> Fin
 from datetime import timedelta
 
 
@@ -35,34 +38,26 @@ def generate_verification_code():
     return random.randint(100000, 999999)
 
 def historique(request):
+<<<<<<< HEAD
     reservations = reservations.objects.filter(user=request.user).order_by('-created_at')
     site = site.objects.all()  # Assurez-vous de récupérer les salles disponibles si nécessaire
     return render(request, 'etudiant/historique.html', {'reservations': reservations, 'salles': Site})
+=======
+    reservations = Reservation.objects.filter(user=request.user).order_by('-created_at')
+    sites = Site.objects.all()  # Assurez-vous de récupérer les sites disponibles si nécessaire
+    return render(request, 'etudiant/historique.html', {'reservations': reservations, 'sites': sites})
+>>>>>>> Fin
 
-
-# def disponibilites(request):
-#     salles = Salle.objects.prefetch_related('boxes')
-#     return render(request, 'etudiant/disponibilites.html', {'disponibilites': disponibilites})
-
-# def disponibilites_view(request):
-#     salles = Salle.objects.all()
-#     disponibilites = Disponibilite.objects.all()
-
-#     # Application des filtres si présents dans la requête
-#     if 'salle' in request.GET:
-#         salles = salles.filter(id=request.GET['salle'])
-#     if 'date' in request.GET:
-#         disponibilites = disponibilites.filter(jour=request.GET['date'])
-
-#     context = {
-#         'salles': salles,
-#         'disponibilites': disponibilites
-#     }
-#     return render(request, 'disponibilites.html', context)
 def disponibilites(request):
+<<<<<<< HEAD
     site = Site.objects.all()
     context = {
         'salles': site,
+=======
+    sites = Site.objects.all()  # Remplacer "salles" par "sites"
+    context = {
+        'sites': sites,
+>>>>>>> Fin
     }
     return render(request, 'etudiant/disponibilites.html', context)
 
@@ -87,14 +82,18 @@ def generate_time_slots():
 def reserver_box(request):
     if request.method == "POST":
         # Récupérer les données envoyées via le formulaire
-        salle_id = request.POST.get("salle")  # ID de la salle sélectionnée
+        site_id = request.POST.get("site")  # ID du site sélectionné
         box_id = request.POST.get("box")  # ID de la box sélectionnée
         date_str = request.POST.get("date")  # Date
         start_time_str = request.POST.get("start_time")  # Heure de départ
         end_time_str = request.POST.get("end_time")  # Heure de fin
 
         # Validation des données
+<<<<<<< HEAD
         if not salle_id or not box_id or not date_str or not start_time_str or not end_time_str:
+=======
+        if not site_id or not box_id or not date_str or not start_time_str or not end_time_str:
+>>>>>>> Fin
             messages.error(request, "Tous les champs sont obligatoires.")
             return redirect('reserver_box')
 
@@ -111,17 +110,24 @@ def reserver_box(request):
             messages.error(request, "L'heure de fin doit être après l'heure de départ.")
             return redirect('reserver_box')
 
-        # Trouver la salle et la box correspondantes
+        # Trouver le site et la box correspondants
         try:
+<<<<<<< HEAD
             salle = Site.objects.get(id=salle_id) # Remplacer site_id par salle_id
             box = Box.objects.get(id=box_id)
         except Site.DoesNotExist or Box.DoesNotExist:
             messages.error(request, "Salle ou Box non trouvée.")
+=======
+            site = Site.objects.get(id=site_id)
+            box = Box.objects.get(id=box_id)
+        except Site.DoesNotExist or Box.DoesNotExist:
+            messages.error(request, "Site ou Box non trouvée.")
+>>>>>>> Fin
             return redirect('reserver_box')
 
         # Créer la réservation
         reservation = Reservation.objects.create(
-            salle=salle,
+            site=site,
             box=box,
             date=date,
             heure_debut=start_time,
@@ -133,12 +139,18 @@ def reserver_box(request):
         messages.success(request, "Votre réservation a été effectuée avec succès !")
         return redirect('historique')  # Ou rediriger vers une autre page, comme l'historique des réservations
 
-    # Afficher le formulaire avec les données des salles et des boxes disponibles
+    # Afficher le formulaire avec les données des sites et des boxes disponibles
     time_slots = generate_time_slots()
 
+<<<<<<< HEAD
     salles = Site.objects.all()
     boxes = Box.objects.all()  # Assurez-vous de filtrer en fonction de la salle sélectionnée si nécessaire
     return render(request, 'etudiant/reserver_box.html', {'salles': salles, 'boxes': boxes})
+=======
+    sites = Site.objects.all()  # Remplacer "salles" par "sites"
+    boxes = Box.objects.all()  # Assurez-vous de filtrer en fonction du site sélectionné si nécessaire
+    return render(request, 'etudiant/reserver_box.html', {'sites': sites, 'boxes': boxes})
+>>>>>>> Fin
 
 # Vue de connexion
 # Stocke temporairement les codes envoyés (en production, utilisez un modèle ou un cache)
@@ -161,11 +173,6 @@ def login_view(request):
                 fail_silently=False,
             )
             return HttpResponse("Code envoyé à votre adresse email.")
-        # else:
-        #     if email in verification_codes and verification_codes[email] == code:
-        #         return HttpResponse("Connexion réussie !")
-        #     else:
-        #         return HttpResponse("Code incorrect, veuillez réessayer.")
         else:  # Si un code est saisi, on le vérifie
             if 'verification_code' in request.session and str(request.session['verification_code']) == code:
                 messages.success(request, "Connexion réussie !")
@@ -205,4 +212,3 @@ def custom_logout(request):
         logout(request)
         return redirect('/')  # Redirection après déconnexion
     return redirect('/')  # Rediriger si méthode GET (ou afficher une page de confirmation)
-
