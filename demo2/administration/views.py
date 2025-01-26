@@ -16,6 +16,7 @@ from .forms import ReservationForm
 from django.utils import timezone
 from django.utils.timezone import now
 from datetime import datetime
+from django.contrib.auth import authenticate, login
 
 # @login_required
 # def admin_dashboard(request):
@@ -55,6 +56,18 @@ from reservation.models import Box, Site, Etudiant, Reservation
 from django.utils import timezone
 from django.contrib.auth.models import User
 from reservation.views import genration_horaires, get_sites, validation_datetime  # Assurez-vous que vos utils sont correctement importés
+
+def admin_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_staff:  # Vérifie que l'utilisateur est un administrateur
+            login(request, user)
+            return redirect('admin_dashboard')  # Remplace 'admin_dashboard' par ta vue
+        else:
+            messages.error(request, 'Identifiants invalides ou droits insuffisants.')
+    return render(request, 'administration/login_admin.html')
 
 @login_required
 def admin_dashboard(request):

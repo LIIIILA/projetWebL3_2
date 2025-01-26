@@ -15,16 +15,16 @@ admin.site.register(Site)
 
 class ReservationAdmin(admin.ModelAdmin):
     # Liste des champs à afficher dans la liste d'admin
-    list_display = ('etudiant_nom', 'box_nom', 'date')  # 'box_nom' et 'etudiant_nom' doivent être des méthodes valides
+    list_display = ('id_etudiant', 'box', 'date')  # 'box_nom' et 'etudiant_nom' doivent être des méthodes valides
     list_filter = ('box', 'date')
 
     # Méthode pour afficher le nom de l'étudiant
     def etudiant_nom(self, obj):
-        return obj.id_etudiant.nom  # Assurez-vous que 'id_etudiant' est un champ valide de Reservation
+        return obj.id_etudiant  # Assurez-vous que 'id_etudiant' est un champ valide de Reservation
 
     # Méthode pour afficher le nom de la box (salle)
     def box_nom(self, obj):
-        return obj.box.nom  # 'box' doit être une relation valide dans Reservation
+        return obj.box  # 'box' doit être une relation valide dans Reservation
 
     # Définir un nom plus lisible dans l'interface d'administration
     etudiant_nom.short_description = 'Étudiant'

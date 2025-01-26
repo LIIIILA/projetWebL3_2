@@ -38,7 +38,6 @@
 # etudiant/models.py
 
 from django.contrib.auth.models import AbstractUser
-<<<<<<< HEAD
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -47,9 +46,7 @@ from django.contrib.auth.models import User
 
 
 
-=======
 from django.db import models
->>>>>>> Fin
 
 class Etudiant(AbstractUser):
     # Champs supplémentaires

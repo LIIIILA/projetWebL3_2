@@ -1,0 +1,61 @@
+/* admin_login.css */
+
+body {
+    font-family: 'Poppins', sans-serif; 
+    background-color: #f4f4f4; /* Fond de page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color: white;
+    border: 2px solid red; /* Bordure rouge */
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+h1 {
+    color: rgb(34, 33, 33);
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkred;
+}
+
+p {
+    color: red;
+    font-size: 14px;
+}

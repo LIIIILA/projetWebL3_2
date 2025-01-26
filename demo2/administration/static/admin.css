@@ -65,20 +65,12 @@ header {
     text-transform: uppercase; /* Met en majuscules */
 }
 
-/* Container des boutons */
-.button-container {
-    display: flex; /* Utilise Flexbox pour aligner les boutons horizontalement */
-    gap: 10px; /* Espace entre les deux boutons */
-    justify-content: center; /* Centrer les boutons horizontalement */
-    align-items: center; /* Centrer verticalement */
-}
-
 /* Bouton Modifier */
 .modify-btn {
     background-color: #4CAF50; /* Vert clair pour 'Modifier' */
     color: white;
     border-radius: 5px;
-    padding: 8px 16px; /* Ajuste la taille du bouton */
+    padding: 8px 16px; /* Réduit le padding pour diminuer la largeur */
     font-size: 14px;
     display: flex; /* Flexbox pour centrer le texte et l'icône */
     justify-content: center; /* Centrer horizontalement */
@@ -104,7 +96,7 @@ header {
     background-color: #F44336; /* Rouge pour 'Annuler' */
     color: white;
     border-radius: 5px;
-    padding: 8px 16px; /* Ajuste la taille du bouton */
+    padding: 8px 16px; /* Réduit le padding pour diminuer la largeur */
     font-size: 14px;
     display: flex; /* Flexbox pour centrer le texte et l'icône */
     justify-content: center; /* Centrer horizontalement */
@@ -124,7 +116,6 @@ header {
 .cancel-btn i {
     margin-right: 8px;
 }
-
 
 
 
@@ -179,28 +170,29 @@ header {
 }
 
 
-
-
 /* Formulaire de filtre */
 .filter-bar {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
+    flex-wrap: nowrap; /* Assure que les éléments restent sur une seule ligne */
+    justify-content: space-between; /* Espacement uniforme entre les éléments */
+    align-items: center; /* Alignement vertical centré */
     background-color: #FFFFFF;
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     border-radius: 8px;
+    width: 100%;
+    /* overflow-x: auto; Ajoute un défilement horizontal si le contenu dépasse */
+    gap: 10px; /* Ajoute un espacement uniforme entre les champs */
 }
 
 .filter-bar .input-field {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    margin: 0 10px;
-    min-width: 250px;
-    max-width: 300px;
+    flex: 0 1 auto; /* Gère la largeur des champs dynamiquement */
+    margin: 0;
+    min-width: 150px; /* Largeur minimale */
+    max-width: 250px; /* Largeur maximale */
 }
 
 .filter-bar .input-field label {
@@ -211,30 +203,33 @@ header {
 
 .filter-bar .input-field select,
 .filter-bar .input-field input {
-    padding: 12px;
+    padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 15px;
     color: var(--text-color);
     background-color: #f9f9f9;
     transition: all 0.3s ease;
+    height: 36px;
 }
 
 .filter-bar .input-field select:focus,
 .filter-bar .input-field input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 5px #FF4D4D;
+    box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
 }
 
 .filter-bar button {
-    padding: 12px 24px;
+    padding: 8px 16px;
     background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    height: 36px;
+    flex-shrink: 0; /* Empêche le bouton de rétrécir */
 }
 
 .filter-bar button:hover {
@@ -244,6 +239,7 @@ header {
 .filter-bar button:active {
     transform: scale(0.98);
 }
+
 
 /* Tableau des réservations */
 table {
@@ -347,4 +343,3 @@ footer {
     padding: 10px 0;
     border-top: 1px solid #ddd;
 }
-
