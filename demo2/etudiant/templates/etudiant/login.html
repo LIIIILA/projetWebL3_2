@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +10,13 @@
         /* Styles généraux */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #b9b9b9; /* Fond gris clair */
+            background-color: #b9b9b9;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            position: relative; /* Permet de positionner des éléments relativement à la page */
         }
 
         .container {
@@ -27,25 +26,12 @@
             padding: 30px;
             width: 350px;
             text-align: center;
-            border-top: 5px solid #dc3545; /* Bordure rouge */
-            position: relative;
-        }
-
-        /* Section pour le logo */
-        .logo-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-
-        .logo-container img {
-            height: 50px; /* Ajuste la taille du logo */
-            width: auto;
+            border-top: 5px solid #dc3545;
         }
 
         h1 {
             font-size: 26px;
-            color: #dc3545; /* Rouge principal */
+            color: #dc3545;
             margin-bottom: 20px;
             text-transform: uppercase;
             font-weight: bold;
@@ -71,7 +57,7 @@
         }
 
         input[type="text"]:focus {
-            border-color: #dc3545; /* Bordure rouge au focus */
+            border-color: #dc3545;
             outline: none;
         }
 
@@ -115,111 +101,81 @@
             box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
         }
 
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
         .hidden {
             display: none;
         }
-
-        .error-message {
-            color: #dc3545; /* Rouge pour les erreurs */
-            font-size: 14px;
-            margin-bottom: 10px;
-            display: none; /* Caché par défaut */
-        }
-
-        .generated-code {
-            font-size: 16px;
-            color: #007bff; /* Bleu pour le code généré */
-            margin-bottom: 10px;
-            display: none; /* Caché par défaut */
-        }
     </style>
-    <script>
-        let generatedCode = "";
-
-        // Génère un code aléatoire à 4 chiffres
-        function generateCode() {
-            return Math.floor(1000 + Math.random() * 9000).toString();
-        }
-
-        // Affiche les champs pour entrer le code
-        function showVerificationFields() {
-            const identifierInput = document.getElementById("identifier");
-            const errorMessage = document.getElementById("error-message");
-
-            // Vérifie que l'identifiant contient exactement 9 chiffres
-            const identifier = identifierInput.value;
-            const isValidIdentifier = /^[0-8]{8}$/.test(identifier);
-
-            if (isValidIdentifier) {
-                // Cache le message d'erreur et génère le code
-                errorMessage.style.display = "none";
-                generatedCode = generateCode();
-                console.log("Code généré :", generatedCode); // Pour débogage
-
-                // Affiche le code généré (simulation de l'envoi)
-                const codeDisplay = document.getElementById("generated-code");
-                codeDisplay.innerText = `Code envoyé : ${generatedCode}`;
-                codeDisplay.style.display = "block";
-
-                // Remplit automatiquement les champs avec le code généré (simulation)
-                const codeInputs = document.querySelectorAll(".verification-input");
-                for (let i = 0; i < generatedCode.length; i++) {
-                    codeInputs[i].value = generatedCode[i];
-                }
-
-                document.getElementById("verification-section").classList.remove("hidden");
-            } else {
-                // Affiche le message d'erreur
-                errorMessage.style.display = "block";
-                identifierInput.focus();
-            }
-        }
-
-        // Vérifie si le code est correct
-        function submitCode() {
-            const codeInputs = document.querySelectorAll(".verification-input");
-            const enteredCode = Array.from(codeInputs).map(input => input.value).join("");
-
-            if (enteredCode === generatedCode) {
-                alert("Code valide ! Connexion réussie.");
-                // Redirige vers la page principale
-                window.location.href = "/etudiant/connexion/";
-            } else {
-                alert("Code invalide !");
-                // Réinitialise les champs
-                document.getElementById("verification-section").classList.add("hidden");
-                document.getElementById("identifier").value = "";
-                codeInputs.forEach(input => input.value = "");
-                document.getElementById("generated-code").style.display = "none";
-            }
-        }
-    </script>
 </head>
 <body>
-    <div class="logo-container">
-        <img src="{% static 'images/logo-universite.png' %}" alt="Logo de l'université">
-    </div>
-
     <div class="container">
         <h1>Connexion</h1>
-        <div id="identifier-section">
-            <label for="identifier">Identifiant (8 chiffres)</label>
-            <input type="text" id="identifier" placeholder="Entrez votre identifiant" required>
-            <div id="error-message" class="error-message">L'identifiant doit contenir exactement 8 chiffres.</div>
-            <button onclick="showVerificationFields()">Envoyer le code</button>
-        </div>
-
-        <div id="verification-section" class="hidden">
-            <label>Entrez le code reçu</label>
-            <p id="generated-code" class="generated-code"></p>
-            <div class="verification-container">
-                <input type="text" class="verification-input" maxlength="1">
-                <input type="text" class="verification-input" maxlength="1">
-                <input type="text" class="verification-input" maxlength="1">
-                <input type="text" class="verification-input" maxlength="1">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
             </div>
-            <button onclick="submitCode()">Vérifier le code</button>
+            {% endfor %}
         </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'login_view' %}">
+            {% csrf_token %}
+
+            {% if step == 1 %}
+            <!-- Étape 1 : Saisie de l'identifiant -->
+            <div id="identifier-section">
+                <label for="email">Identifiant (8 chiffres)</label>
+                <input type="text" id="email" name="email" placeholder="Entrez votre identifiant" required pattern="\d{8}">
+                <div class="error-message hidden" id="error-message">L'identifiant doit contenir exactement 8 chiffres.</div>
+                <button type="submit">Envoyer le code</button>
+            </div>
+
+            {% elif step == 2 %}
+            <!-- Étape 2 : Saisie du code de vérification -->
+            <div id="verification-section">
+                <label>Entrez le code reçu</label>
+                <p>Un code a été envoyé à l'adresse : <strong>{{ email }}@parisnanterre.fr</strong></p>
+
+                <div class="verification-container">
+                    <input type="text" class="verification-input" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" class="verification-input" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" class="verification-input" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" class="verification-input" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" class="verification-input" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" class="verification-input" maxlength="1" oninput="moveToNext(this)">
+                </div>
+
+                <input type="hidden" name="email" value="{{ email }}">
+                <input type="hidden" name="code" id="code">
+                <button type="submit">Valider et me connecter</button>
+            </div>
+            {% endif %}
+        </form>
     </div>
+
+    <script>
+        // Fonction pour déplacer le curseur entre les champs de saisie
+        function moveToNext(input) {
+            const nextInput = input.nextElementSibling;
+            if (nextInput && input.value) {
+                nextInput.focus();
+            }
+            updateHiddenCode();
+        }
+
+        // Mise à jour du champ caché avec le code complet
+        function updateHiddenCode() {
+            const inputs = document.querySelectorAll('.verification-input');
+            const code = Array.from(inputs).map(input => input.value).join('');
+            document.getElementById('code').value = code;
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation d'annulation</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Couleurs du drapeau de la France */
+        .primary-color {
+            background-color: #0063c0; /* Bleu */
+            color: white;
+        }
+
+        .secondary-color {
+            background-color: #EF4135; /* Rouge */
+            color: white;
+        }
+
+        .btn-primary-custom {
+            background-color: #006dd3; /* Bleu */
+            border: none;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #005ab4; /* Bleu foncé au survol */
+        }
+
+        .btn-secondary-custom {
+            background-color: #EF4135; /* Rouge */
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary-custom:hover {
+            background-color: #f03c2f; /* Rouge foncé au survol */
+        }
+
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+
+        /* Style de l'en-tête */
+        .card-header {
+            background-color: #0055A4; /* Bleu */
+            color: white;
+        }
+
+        /* Style du fond de la page */
+        body {
+            background-color: #FFFFFF; /* Blanc */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-header text-center primary-color">
+                <h1 class="m-0">Confirmation d'annulation</h1>
+            </div>
+            <div class="card-body">
+                <p>Êtes-vous sûr de vouloir annuler la réservation suivante ?</p>
+                <ul>
+                    <li><strong>Box :</strong> {{ reservation.box.nom }}</li>
+                    <li><strong>Date :</strong> {{ reservation.date|date:"d-m-Y"  }}</li>
+                    <li><strong>Heure :</strong> {{ reservation.start_time|date:"H:i" }} - {{ reservation.end_time|date:"H:i" }}</li>
+                </ul>
+                
+                <form method="post" action="{% url 'annuler_reservationUser' reservation.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary-custom w-100 mb-3">Confirmer</button>
+                </form>
+
+                <a href="{% url 'profil' %}" class="btn btn-secondary-custom w-100">Annuler</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

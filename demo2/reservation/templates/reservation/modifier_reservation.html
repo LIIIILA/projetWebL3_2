@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Modifier votre réservation</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="date">Date :</label>
+        <input type="date" name="date" id="date" value="{{ reservation.date }}" required>
+        
+        <label for="start_time">Heure de début :</label>
+        <input type="time" name="start_time" id="start_time" value="{{ reservation.start_time }}" required>
+        
+        <label for="end_time">Heure de fin :</label>
+        <input type="time" name="end_time" id="end_time" value="{{ reservation.end_time }}" required>
+        
+        <button type="submit">Modifier</button>
+        <a href="{% url 'profil' %}">Annuler</a>
+    </form>
+
+</body>
+</html>

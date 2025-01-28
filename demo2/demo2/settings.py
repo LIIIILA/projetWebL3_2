@@ -27,8 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'etudiant.Etudiant'
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,7 +46,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -135,19 +133,38 @@ STATICFILES_DIRS = [
     BASE_DIR / "etudiant/static",
     BASE_DIR / "reservation/static",
 ]
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Serveur SMTP de Gmail
-EMAIL_PORT = 587  # Port pour TLS
-EMAIL_USE_TLS = True  # Utiliser TLS
-EMAIL_HOST_USER = 'ton.email@gmail.com'  # Ton adresse email
-EMAIL_HOST_PASSWORD = 'ton_mot_de_passe'  # Ton mot de passe
-DEFAULT_FROM_EMAIL = 'ton.email@gmail.com'  # Email par défaut pour l'expéditeur
+EMAIL_HOST = 'smtp.gmail.com'  
+EMAIL_PORT = 587 
+EMAIL_USE_TLS = True  
+EMAIL_HOST_USER = 'hongreve@gmail.com'  
+EMAIL_HOST_PASSWORD = 'kaep psxt gwst ixgt' 
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER 
+LOGOUT_REDIRECT_URL = '/' 
 
-LOGOUT_REDIRECT_URL = '/'  # URL vers laquelle rediriger après déconnexion (optionnel)
+AUTH_USER_MODEL = 'administration.Administrateur'
+AUTHENTICATION_BACKENDS = [
+    'etudiant.backends.EtudiantBackend', 
+    'django.contrib.auth.backends.ModelBackend',  # Pour les administrateurs
+    
+]
+LOGIN_URL = 'etudiant:login_view'  
 
-AUTH_USER_MODEL = 'etudiant.Etudiant'
+CSRF_COOKIE_HTTPONLY = True
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',  
+    'http://localhost:8000',
+]
 
 
-
-
-
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Utilise la base de données pour stocker la session
+SESSION_COOKIE_NAME = 'sessionid'  # Nom du cookie de session
+SESSION_COOKIE_AGE = 3600  # Durée de vie du cookie en secondes (par exemple 1 heure)
+SESSION_COOKIE_SECURE = False  # Ne nécessite pas HTTPS en développement local
+CSRF_COOKIE_SECURE = False 
+SESSION_COOKIE_DOMAIN = None  # Par défaut pour localhost
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'

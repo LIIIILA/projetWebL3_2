@@ -1,0 +1,68 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f9f9f9;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Conteneur principal avec bordure rouge et effet d'ombre */
+.container {
+    background-color: #fff;
+    border: 2px solid #e53935; /* Encadrer en rouge */
+    border-radius: 12px; /* Coins arrondis */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effet d'ombre */
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* Titre avec une couleur rouge et une marge */
+h1 {
+    color: #e53935; /* Rouge pour le titre */
+    font-size: 2rem;
+    font-weight: 600; /* Gras pour le titre */
+    margin-bottom: 20px;
+}
+
+/* Champs du formulaire */
+.input-field input {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Boutons - centrage du texte et couleurs */
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 20px;
+    width: auto;
+}
+
+/* Bouton Enregistrer en vert */
+.btn.green {
+    background-color: #4CAF50; /* Vert */
+}
+
+/* Effet au survol du bouton Enregistrer */
+.btn.green:hover {
+    background-color: #388E3C; /* Vert plus foncé */
+}
+
+/* Bouton Retour en gris */
+.btn.red {
+    background-color: #757575; /* Gris */
+}
+
+/* Effet au survol du bouton Retour */
+.btn.red:hover {
+    background-color: #424242; /* Gris plus foncé */
+}

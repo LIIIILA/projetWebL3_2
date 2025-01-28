@@ -28,11 +28,11 @@
             <nav class="red darken-3">
                 <div class="nav-wrapper container">
                     <a href="{% url 'reservation_index' %}" class="brand-logo">
-                        <img src="{% static 'reservation/logoNanterre_fondvide.png' %}" alt="Logo" class="logo">
+                        <img src="{% static 'images/logo_client.png' %}" alt="Logo" class="logo">
                         Bibliothèque Universitaire
                     </a>
                     <ul class="right">
-                        <li><a href="#">Connexion</a></li>
+                        <li><a href="login.html">Connexion</a></li>
                     </ul>
                 </div>
             </nav>
@@ -46,8 +46,11 @@
         <div class="card-panel">
             <form method="post" class="row" action="{% url 'reservation_index' %}">
                 {% csrf_token %}
-                
-                <!-- Filtre par site -->
+                {% if reservation_id %}
+                    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+                {% endif %}
+
+        <!-- Filtre par site -->
                 <div class="input-field col s12 m6">
                     <select name="site_id" id="site" class="browser-default" required>
                         <option value="" disabled selected>Filtrer par site</option>
@@ -88,6 +91,7 @@
                         {% endfor %}
                     </select>
                 </div>
+                
                 
                 <!-- Bouton de recherche -->
                 <div class="col s12 center-align">
@@ -136,15 +140,30 @@
                                 </div>
         
                                 <!-- Formulaire de réservation -->
-                                <div class="card-action">
-                                    <form method="post" action="{% url 'verification' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="box_id" value="{{ box.box.id }}">
-                                        <input type="hidden" name="date" value="{{ date }}"> <!-- La date est envoyée ici comme valeur cachée -->           
-                                        <input type="hidden" id="selected-hour-{{ box.box.id }}" name="selected_hour" value="">
-                                        <button type="submit" id="reserve-button-{{ box.box.id }}" class="btn red darken-3 waves-effect waves-light" data-box-id="{{ box.box.id }}" disabled>Réserver</button>
-                                    </form>
-                                </div>
+                               
+
+                                {%if reservation_id%}
+                                    <div class="card-action">
+                                        <form method="post" action="{% url 'disponibilite_boxes' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+                                            <input type="hidden" name="box_id" value="{{ box.box.id }}">
+                                            <input type="hidden" name="date" value="{{ date }}"> <!-- La date est envoyée ici comme valeur cachée -->           
+                                            <input type="hidden" id="selected-hour-{{ box.box.id }}" name="selected_hour" value="">
+                                            <button type="submit" id="reserve-button-{{ box.box.id }}" class="btn red darken-3 waves-effect waves-light" data-box-id="{{ box.box.id }}" disabled>Réserver</button>
+                                        </form>
+                                    </div>
+                                {%else%}
+                                    <div class="card-action">
+                                        <form method="post" action="{% url 'verification' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="box_id" value="{{ box.box.id }}">
+                                            <input type="hidden" name="date" value="{{ date }}"> <!-- La date est envoyée ici comme valeur cachée -->           
+                                            <input type="hidden" id="selected-hour-{{ box.box.id }}" name="selected_hour" value="">
+                                            <button type="submit" id="reserve-button-{{ box.box.id }}" class="btn red darken-3 waves-effect waves-light" data-box-id="{{ box.box.id }}" disabled>Réserver</button>
+                                        </form>
+                                    </div>
+                                {%endif%}
                             </div>
                         </div>
                     {% endfor %}

@@ -1,0 +1,345 @@
+/* Couleurs basées sur l'université de Nanterre */
+:root {
+    --primary-color: #343333e1; /* Bleu institutionnel */
+    --secondary-color: #3C9B57; /* Vert qui rappelle l'environnement universitaire */
+    --neutral-color: #F4F6F9; /* Gris clair pour le fond */
+    --text-color: #333333; /* Couleur du texte */
+    --light-text-color: #666666; /* Pour les textes secondaires */
+}
+
+/* Chargement de la police Roboto depuis Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Base */
+body {
+    font-family: 'Roboto', Arial, sans-serif; /* Changer la police à Roboto */
+    background-color: var(--neutral-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Container pour le texte et le bouton */
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Espacement entre le texte et le bouton */
+    align-items: center; /* Aligne verticalement les éléments */
+    margin-bottom: 20px; /* Espacement entre le titre et la table */
+    width: 100%; 
+}
+
+.header-container h3 {
+    flex-grow: 1; /* Le titre prend tout l'espace disponible */
+    text-align: center;   /* Centre le texte */
+    font-weight: bold;    /* Met en gras */
+    text-transform: uppercase; /* Majuscules */
+    margin: 0; /* Enlève les marges pour éviter des espaces inutiles */
+}
+
+/* Bouton Réserver aligné à droite */
+.header-container .btn {
+    margin-left: 20px; /* Espacement entre le titre et le bouton */
+}
+
+/* Style pour centrer, mettre en gras et en majuscules les titres h3 */
+.title {
+    text-align: center;   /* Centre le texte */
+    font-weight: bold;    /* Met le texte en gras */
+    text-transform: uppercase; /* Transforme le texte en majuscules */
+    margin-bottom: 20px;  /* Espace sous le titre */
+}
+
+/* Style pour le texte ADMINISTRATION */
+.admin-title {
+    font-size: 22px; /* Taille de la police plus grande */
+    font-weight: bold; /* Met le texte en gras */
+    color: var(--primary-color); /* Utilise la couleur primaire de ton site */
+    margin-left: 10px; /* Ajoute un peu d'espace avant le texte */
+    letter-spacing: 1px; /* Espace entre les lettres pour un effet plus aéré */
+    text-transform: uppercase; /* Met en majuscules */
+}
+
+/* Bouton Modifier */
+.modify-btn {
+    background-color: #4CAF50; /* Vert clair pour 'Modifier' */
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px; /* Réduit le padding pour diminuer la largeur */
+    font-size: 14px;
+    display: flex; /* Flexbox pour centrer le texte et l'icône */
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
+    width: auto; /* Largeur automatique pour ajuster au contenu */
+    min-width: 120px; /* Largeur minimale pour éviter que les boutons soient trop petits */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Effet de survol pour le bouton Modifier */
+.modify-btn:hover {
+    background-color: #388E3C; /* Vert foncé pour l'effet hover */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Icône du bouton Modifier */
+.modify-btn i {
+    margin-right: 8px;
+}
+
+/* Bouton Annuler */
+.cancel-btn {
+    background-color: #F44336; /* Rouge pour 'Annuler' */
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px; /* Réduit le padding pour diminuer la largeur */
+    font-size: 14px;
+    display: flex; /* Flexbox pour centrer le texte et l'icône */
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
+    width: auto; /* Largeur automatique pour ajuster au contenu */
+    min-width: 120px; /* Largeur minimale pour éviter que les boutons soient trop petits */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Effet de survol pour le bouton Annuler */
+.cancel-btn:hover {
+    background-color: #D32F2F; /* Rouge foncé pour l'effet hover */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Icône du bouton Annuler */
+.cancel-btn i {
+    margin-right: 8px;
+}
+
+
+
+
+/* Optionnel : pour ajouter une séparation avant le texte "ADMINISTRATION" */
+.logo-container a::before {
+    font-size: 30px; /* Taille plus grande pour le séparateur */
+    margin-right: 10px; /* Espace entre le séparateur et le texte */
+    color: var(--primary-color); /* Même couleur que le texte ADMINISTRATION */
+}
+
+
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Espacement entre les éléments */
+    align-items: center;
+    width: 100%;                    /* Assure que la navbar occupe toute la largeur */
+}
+
+/* Logo container */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo image */
+.logo-container img {
+    max-width: 100%;  /* Le logo ne dépasse pas la largeur du conteneur */
+    height: auto;     /* Maintient le ratio d'aspect */
+    max-height: 50px; /* Taille maximale du logo */
+}
+
+/* Bouton Déconnexion aligné à droite */
+.navbar-right {
+    margin-left: auto; /* Pousse le bouton à droite */
+}
+
+.btn-nav {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 6px;
+    background-color: #FF4D4D; /* Couleur du bouton */
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect */
+.btn-nav:hover {
+    background-color: #d43f3a;
+}
+
+
+/* Formulaire de filtre */
+.filter-bar {
+    display: flex;
+    flex-wrap: nowrap; /* Assure que les éléments restent sur une seule ligne */
+    justify-content: space-between; /* Espacement uniforme entre les éléments */
+    align-items: center; /* Alignement vertical centré */
+    background-color: #FFFFFF;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    width: 100%;
+    /* overflow-x: auto; Ajoute un défilement horizontal si le contenu dépasse */
+    gap: 10px; /* Ajoute un espacement uniforme entre les champs */
+}
+
+.filter-bar .input-field {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 auto; /* Gère la largeur des champs dynamiquement */
+    margin: 0;
+    min-width: 150px; /* Largeur minimale */
+    max-width: 250px; /* Largeur maximale */
+}
+
+.filter-bar .input-field label {
+    font-size: 14px;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.filter-bar .input-field select,
+.filter-bar .input-field input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    color: var(--text-color);
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    height: 36px;
+}
+
+.filter-bar .input-field select:focus,
+.filter-bar .input-field input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+}
+
+.filter-bar button {
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 36px;
+    flex-shrink: 0; /* Empêche le bouton de rétrécir */
+}
+
+.filter-bar button:hover {
+    background-color: #FF4D4D;
+}
+
+.filter-bar button:active {
+    transform: scale(0.98);
+}
+
+
+/* Tableau des réservations */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 700; /* Polices en gras pour les en-têtes */
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+table .btn {
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+table .btn.blue {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+table .btn.red {
+    background-color: #d9534f;
+    color: white;
+}
+
+table .btn.blue:hover {
+    background-color: #FF4D4D;
+}
+
+table .btn.red:hover {
+    background-color: #c9302c;
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 30px 0;
+}
+
+/* Container qui contient les sections du footer */
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alignement au début pour les éléments enfants */
+    flex-wrap: wrap; /* Pour être responsive si la largeur est trop petite */
+    margin-bottom: 20px; /* Espacement entre les sections et la partie basse */
+}
+
+/* Section individuelle du footer */
+.footer-section {
+    flex: 1;
+    padding: 0 20px;
+    min-width: 200px; /* Pour s'assurer que les sections ne deviennent pas trop petites */
+    box-sizing: border-box;
+}
+
+/* Titres des sections du footer */
+.footer-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Liens dans la section Plan et Site */
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #FF4D4D; /* Changer la couleur au survol */
+}
+
+/* Partie inférieure du footer */
+.footer-bottom {
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+}

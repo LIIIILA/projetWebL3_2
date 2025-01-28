@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Déconnexion</title>
+
+    <!-- Lien vers Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <!-- Lien vers icônes Material Design -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .card h5 {
+            color: #2c5cdd;
+            margin-bottom: 20px;
+        }
+
+        .card p {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .card .progress {
+            height: 10px;
+            background-color: #e0e0e0;
+        }
+
+        .card .progress .determinate {
+            background-color: ff3300;
+        }
+
+        .spinner {
+            margin: 20px auto;
+        }
+    </style>
+
+    <script>
+        setTimeout(() => {window.location.href = '/';}, 5000);
+    </script>
+</head>
+
+<body>
+    <div class="card">
+        <h5>Vous avez été déconnecté avec succès</h5>
+        <p>Vous serez redirigé vers la page d'accueil dans 5 secondes...</p>
+
+        <!-- Animation de chargement (spinner) -->
+        <div class="preloader-wrapper big active spinner">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barre de progression pour indiquer la redirection -->
+        <div class="progress">
+            <div class="determinate" style="width: 100%; transition: width 5s;"></div>
+        </div>
+    </div>
+
+    <!-- Importation de Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

@@ -1,16 +1,79 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Résumé réservation</title>
-</head>
-<body>
-    <h2>{{ message }}</h2>
-    <p><strong>Box :</strong> {{ box.nom }} ({{ box.site.nom }})</p>
-    <p><strong>Date :</strong> {{ date }}</p>
-    <p><strong>Heure de début :</strong> {{ start_time }}</p>
-    <p><strong>Heure de fin :</strong> {{ end_time }}</p>
 
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <style>
+        /* Couleurs personnalisées */
+        .custom-blue {
+            color: #0277bd; /* Bleu Material Design */
+        }
+
+        .custom-red {
+            color: #d32f2f; /* Rouge Material Design */
+        }
+
+        /* Centrage du contenu */
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background-color: #0277bd;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #01579b;
+        }
+    </style>
+
+</head>
+
+<script>
+    setTimeout(function() {
+        window.location.href = "{% url 'profil' %}";
+    }, 5000);
+</script>
+
+<body class="bg-light">
+
+    <div class="center-content">
+        <h2 class="custom-blue">Votre réservation a bien été confirmée.</h2>
+
+        <p><strong>Box :</strong> {{ reservation.box.nom }} ({{ reservation.box.site.nom }})</p>
+        <p><strong>Date :</strong> {{ reservation.date|date:"d-m-Y" }}</p>
+        <p><strong>Heure de début :</strong> {{ reservation.start_time|date:"H:i" }}</p>
+        <p><strong>Heure de fin :</strong> {{ reservation.end_time|date:"H:i" }}</p>
+        <p><strong>Durée :</strong> 15 minutes</p>
+
+        <h3 class="custom-red">Un email de confirmation a été envoyé à votre adresse : {{ reservation.id_etudiant.email }}</h3>
+
+    </div>
+
+    <!-- Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>

@@ -76,7 +76,16 @@
                     <input type="hidden" name="box_id" value="{{ box.id }}">
                     <input type="hidden" name="selected_hour" value="{{ start_time|date:"H:i" }}">
                     <input type="hidden" name="date" value="{{ date }}">
-                    <button type="submit" class="btn red darken-3 waves-effect waves-light">Confirmer la réservation</button>
+                    {% if is_modification %}
+                    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+                    {% endif %}
+                    <button type="submit" class="btn red darken-3 waves-effect waves-light">
+                        {% if is_modification %}
+                            Confirmer la modification
+                        {% else %}
+                            Confirmer la réservation
+                        {% endif %}
+                    </button>
                 </form>
             </div>
         </div>
